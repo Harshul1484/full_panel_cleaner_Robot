@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SolarCleanerBot — Wiring Diagram (Model-Accurate)</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0d1117; color: #e6edf3; font-family: 'Consolas','Courier New',monospace; font-size: 12px; line-height: 1.7; }
+h1 { text-align:center; padding:18px; font-size:20px; color:#58a6ff; border-bottom:2px solid #30363d; letter-spacing:3px; }
+.subtitle { text-align:center; color:#8b949e; font-size:11px; padding:5px; margin-bottom:4px; }
+.model-badge { text-align:center; background:#1a3520; border:1px solid #3fb950; color:#3fb950; padding:6px 16px; font-size:11px; margin:8px 16px; border-radius:4px; }
+
+.legend { display:flex; gap:16px; justify-content:center; padding:10px; flex-wrap:wrap; border-bottom:1px solid #30363d; margin-bottom:14px; }
+.leg { display:flex; align-items:center; gap:6px; font-size:11px; }
+.leg-line { width:32px; height:3px; border-radius:2px; }
+.l24v{background:#f85149;}.l12v{background:#fb8f44;}.l5v{background:#f2cc60;}
+.lgnd{background:#6e7681;}.lpwm{background:#58a6ff;}.lsig{background:#3fb950;}
+.lwat{background:#39c5cf;}.lmec{background:#d2a8ff;}
+
+.grid-1{display:grid;grid-template-columns:1fr;gap:12px;padding:8px 16px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:8px 16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:8px 16px;}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;padding:8px 16px;}
+
+.section-title{color:#8b949e;font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  padding:10px 16px 3px;border-top:1px solid #21262d;margin-top:8px;}
+.block{border:1px solid #30363d;border-radius:6px;padding:10px 12px;background:#161b22;}
+.block-title{font-size:11px;font-weight:bold;margin-bottom:8px;padding-bottom:5px;
+  border-bottom:1px solid #21262d;display:flex;justify-content:space-between;align-items:center;}
+.chip{font-size:9px;color:#8b949e;font-weight:normal;}
+
+.pin{display:flex;justify-content:space-between;align-items:center;padding:2px 0;gap:8px;}
+.pin-name{color:#cdd9e5;flex-shrink:0;}
+.pin-conn{font-size:10px;padding:1px 6px;border-radius:3px;white-space:nowrap;text-align:right;}
+
+.p24v{background:#3a0d0d;color:#f85149;border:1px solid #8f1a1a;}
+.p12v{background:#3a1a00;color:#fb8f44;border:1px solid #8f4400;}
+.p5v {background:#3a2d00;color:#f2cc60;border:1px solid #8f7700;}
+.pgnd{background:#1a1e24;color:#6e7681;border:1px solid #30363d;}
+.ppwm{background:#1a2a40;color:#58a6ff;border:1px solid #2d4a6f;}
+.psig{background:#1a3a20;color:#3fb950;border:1px solid #2d6a3f;}
+.pi2c{background:#1a2535;color:#79c0ff;border:1px solid #2d4f70;}
+.puart{background:#3a1a10;color:#ffa657;border:1px solid #8f3d20;}
+.pwat{background:#1a3535;color:#39c5cf;border:1px solid #2d7070;}
+.pmec{background:#2a2a10;color:#c9b458;border:1px solid #6a6a28;}
+
+.rail{border-radius:4px;padding:7px 12px;margin:3px 0;font-size:11px;
+  display:flex;justify-content:space-between;align-items:center;font-weight:bold;}
+.r24v{background:#3a0d0d;border:1px solid #8f1a1a;color:#f85149;}
+.r12v{background:#3a1a00;border:1px solid #8f4400;color:#fb8f44;}
+.r5v {background:#3a2d00;border:1px solid #8f7700;color:#f2cc60;}
+
+table{width:100%;border-collapse:collapse;}
+th{background:#21262d;color:#8b949e;padding:6px 8px;text-align:left;font-size:10px;letter-spacing:1px;border:1px solid #30363d;}
+td{padding:5px 8px;border:1px solid #21262d;font-size:11px;}
+tr:nth-child(even){background:#161b22;}
+tr:hover{background:#1c2128;}
+.td-from{color:#58a6ff;}.td-to{color:#3fb950;}.td-net{color:#f2cc60;font-size:10px;}
+.td-pin{color:#d2a8ff;font-family:monospace;}.td-note{color:#8b949e;font-size:10px;}
+</style>
+</head>
+<body>
+
+<h1>SOLARCLEANERBOT — WIRING DIAGRAM</h1>
+<div class="subtitle">Verified from Assem1.SLDASM · 2× GF555 Drive Motors · Differential Steering · 2× Brush Assembly · 24V System</div>
+<div class="model-badge">✓ MODEL-ACCURATE — studied from Assem1.SLDASM: 55 unique parts · 359 bodies · 2× GF555 · 54× track links · 2× wash-assemble1</div>
+
+<div class="legend">
+  <div class="leg"><div class="leg-line l24v"></div><span>24V Power</span></div>
+  <div class="leg"><div class="leg-line l12v"></div><span>12V Rail</span></div>
+  <div class="leg"><div class="leg-line l5v"></div><span>5V Logic</span></div>
+  <div class="leg"><div class="leg-line lgnd"></div><span>GND</span></div>
+  <div class="leg"><div class="leg-line lpwm"></div><span>PWM Signal</span></div>
+  <div class="leg"><div class="leg-line lsig"></div><span>Digital Signal</span></div>
+  <div class="leg"><div class="leg-line lwat"></div><span>Water / Fluid</span></div>
+  <div class="leg"><div class="leg-line lmec"></div><span>Mechanical</span></div>
+</div>
+
+<!-- ① SYSTEM OVERVIEW SVG -->
+<div class="section-title">① SYSTEM BLOCK DIAGRAM — AS PER ASSEM1.SLDASM</div>
+<div style="padding:0 16px 12px;">
+<svg width="100%" viewBox="0 0 1000 440" xmlns="http://www.w3.org/2000/svg">
+  <!-- Battery -->
+  <rect x="10"  y="180" width="100" height="60" rx="5" fill="#1a2a1a" stroke="#3fb950" stroke-width="1.5"/>
+  <text x="60"  y="204" fill="#3fb950" font-size="10" text-anchor="middle" font-family="Consolas">24V LiPo</text>
+  <text x="60"  y="218" fill="#3fb950" font-size="10" text-anchor="middle" font-family="Consolas">Battery</text>
+  <text x="60"  y="232" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">5–6 Ah</text>
+
+  <!-- BMS -->
+  <rect x="130" y="188" width="70" height="44" rx="4" fill="#161b22" stroke="#30363d"/>
+  <text x="165" y="208" fill="#8b949e" font-size="9" text-anchor="middle" font-family="Consolas">BMS</text>
+  <text x="165" y="221" fill="#8b949e" font-size="9" text-anchor="middle" font-family="Consolas">10A</text>
+  <line x1="110" y1="210" x2="130" y2="210" stroke="#f85149" stroke-width="2"/>
+  <polygon points="128,206 130,210 128,214" fill="#f85149"/>
+
+  <!-- Power rails -->
+  <rect x="220" y="140" width="90" height="36" rx="4" fill="#3a0d0d" stroke="#8f1a1a"/>
+  <text x="265" y="155" fill="#f85149" font-size="9" text-anchor="middle" font-family="Consolas">24V MOTOR</text>
+  <text x="265" y="168" fill="#f85149" font-size="9" text-anchor="middle" font-family="Consolas">RAIL · 20A fuse</text>
+
+  <rect x="220" y="188" width="90" height="36" rx="4" fill="#3a1a00" stroke="#8f4400"/>
+  <text x="265" y="203" fill="#fb8f44" font-size="9" text-anchor="middle" font-family="Consolas">12V RAIL</text>
+  <text x="265" y="216" fill="#fb8f44" font-size="9" text-anchor="middle" font-family="Consolas">LM2596 5A</text>
+
+  <rect x="220" y="236" width="90" height="36" rx="4" fill="#3a2d00" stroke="#8f7700"/>
+  <text x="265" y="251" fill="#f2cc60" font-size="9" text-anchor="middle" font-family="Consolas">5V LOGIC</text>
+  <text x="265" y="264" fill="#f2cc60" font-size="9" text-anchor="middle" font-family="Consolas">LM2596 3A</text>
+
+  <line x1="200" y1="205" x2="220" y2="158" stroke="#f85149" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <line x1="200" y1="210" x2="220" y2="206" stroke="#fb8f44" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <line x1="200" y1="215" x2="220" y2="254" stroke="#f2cc60" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+  <!-- Arduino Mega -->
+  <rect x="340" y="155" width="110" height="110" rx="5" fill="#1a2a40" stroke="#58a6ff" stroke-width="1.5"/>
+  <text x="395" y="178" fill="#58a6ff" font-size="10" text-anchor="middle" font-family="Consolas" font-weight="bold">ARDUINO</text>
+  <text x="395" y="192" fill="#58a6ff" font-size="10" text-anchor="middle" font-family="Consolas" font-weight="bold">MEGA 2560</text>
+  <text x="395" y="208" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">Main Controller</text>
+  <text x="395" y="222" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">D2–D53 / A0–A15</text>
+  <text x="395" y="236" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">I2C · UART · PWM</text>
+  <text x="395" y="250" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">Powered: 5V rail</text>
+  <line x1="310" y1="254" x2="340" y2="248" stroke="#f2cc60" stroke-width="1.5"/>
+
+  <!-- BTS7960 LEFT -->
+  <rect x="500" y="80"  width="105" height="60" rx="4" fill="#161b22" stroke="#f85149" stroke-width="1.5"/>
+  <text x="552" y="100" fill="#f85149" font-size="9" text-anchor="middle" font-family="Consolas" font-weight="bold">BTS7960 #1</text>
+  <text x="552" y="113" fill="#fb8f44" font-size="9" text-anchor="middle" font-family="Consolas">LEFT Track</text>
+  <text x="552" y="126" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">43A H-bridge</text>
+
+  <!-- BTS7960 RIGHT -->
+  <rect x="500" y="160" width="105" height="60" rx="4" fill="#161b22" stroke="#f85149" stroke-width="1.5"/>
+  <text x="552" y="180" fill="#f85149" font-size="9" text-anchor="middle" font-family="Consolas" font-weight="bold">BTS7960 #2</text>
+  <text x="552" y="193" fill="#fb8f44" font-size="9" text-anchor="middle" font-family="Consolas">RIGHT Track</text>
+  <text x="552" y="206" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">43A H-bridge</text>
+
+  <!-- Arrows MCU → BTS7960 -->
+  <line x1="450" y1="185" x2="500" y2="110" stroke="#58a6ff" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="450" y1="195" x2="500" y2="190" stroke="#58a6ff" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <polygon points="498,106 500,110 498,114" fill="#58a6ff"/>
+  <polygon points="498,186 500,190 498,194" fill="#58a6ff"/>
+  <text x="475" y="145" fill="#58a6ff" font-size="8" text-anchor="middle" font-family="Consolas">PWM</text>
+
+  <!-- GF555 LEFT motor -->
+  <rect x="660" y="68"  width="100" height="60" rx="4" fill="#1a2a1a" stroke="#3fb950" stroke-width="1.5"/>
+  <text x="710" y="90"  fill="#3fb950" font-size="9" text-anchor="middle" font-family="Consolas" font-weight="bold">GF555 #1</text>
+  <text x="710" y="103" fill="#3fb950" font-size="9" text-anchor="middle" font-family="Consolas">LEFT Motor</text>
+  <text x="710" y="116" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">24V · copling #1</text>
+  <line x1="605" y1="110" x2="660" y2="98" stroke="#f85149" stroke-width="2"/>
+  <polygon points="658,94 660,98 658,102" fill="#f85149"/>
+
+  <!-- GF555 RIGHT motor -->
+  <rect x="660" y="148" width="100" height="60" rx="4" fill="#1a2a1a" stroke="#3fb950" stroke-width="1.5"/>
+  <text x="710" y="170" fill="#3fb950" font-size="9" text-anchor="middle" font-family="Consolas" font-weight="bold">GF555 #2</text>
+  <text x="710" y="183" fill="#3fb950" font-size="9" text-anchor="middle" font-family="Consolas">RIGHT Motor</text>
+  <text x="710" y="196" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">24V · copling #2</text>
+  <line x1="605" y1="190" x2="660" y2="178" stroke="#f85149" stroke-width="2"/>
+  <polygon points="658,174 660,178 658,182" fill="#f85149"/>
+
+  <!-- Tracks -->
+  <rect x="810" y="68"  width="90" height="60" rx="4" fill="#161b22" stroke="#d2a8ff" stroke-width="1.5"/>
+  <text x="855" y="88"  fill="#d2a8ff" font-size="8" text-anchor="middle" font-family="Consolas" font-weight="bold">LEFT TRACK</text>
+  <text x="855" y="101" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">27× 1ofsheni links</text>
+  <text x="855" y="112" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">3× 6260K9 sprockets</text>
+  <text x="855" y="123" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">ST-320 chain</text>
+  <line x1="760" y1="98"  x2="810" y2="98"  stroke="#d2a8ff" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="808,94 810,98 808,102" fill="#d2a8ff"/>
+
+  <rect x="810" y="148" width="90" height="60" rx="4" fill="#161b22" stroke="#d2a8ff" stroke-width="1.5"/>
+  <text x="855" y="168" fill="#d2a8ff" font-size="8" text-anchor="middle" font-family="Consolas" font-weight="bold">RIGHT TRACK</text>
+  <text x="855" y="181" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">27× 1ofsheni links</text>
+  <text x="855" y="192" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">3× 6260K9 sprockets</text>
+  <text x="855" y="203" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">ST-320 chain</text>
+  <line x1="760" y1="178" x2="810" y2="178" stroke="#d2a8ff" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="808,174 810,178 808,182" fill="#d2a8ff"/>
+
+  <!-- L298N brush -->
+  <rect x="500" y="250" width="105" height="55" rx="4" fill="#161b22" stroke="#39c5cf" stroke-width="1.5"/>
+  <text x="552" y="270" fill="#39c5cf" font-size="9" text-anchor="middle" font-family="Consolas" font-weight="bold">L298N</text>
+  <text x="552" y="283" fill="#39c5cf" font-size="9" text-anchor="middle" font-family="Consolas">Brush Driver</text>
+  <text x="552" y="296" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">2× 6331K61 motors</text>
+  <line x1="450" y1="220" x2="500" y2="270" stroke="#58a6ff" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <polygon points="498,267 500,270 498,273" fill="#58a6ff"/>
+
+  <!-- Brush assemblies -->
+  <rect x="660" y="240" width="100" height="70" rx="4" fill="#1a3535" stroke="#39c5cf" stroke-width="1.5"/>
+  <text x="710" y="260" fill="#39c5cf" font-size="8" text-anchor="middle" font-family="Consolas" font-weight="bold">FRONT BRUSH</text>
+  <text x="710" y="273" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">wash-assemble1 #1</text>
+  <text x="710" y="284" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">brash 650×70mm</text>
+  <text x="710" y="295" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">water-jet 500mm</text>
+  <text x="710" y="306" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">2× T-part-assemble</text>
+  <line x1="605" y1="270" x2="660" y2="270" stroke="#39c5cf" stroke-width="1.5"/>
+  <polygon points="658,266 660,270 658,274" fill="#39c5cf"/>
+
+  <rect x="660" y="325" width="100" height="60" rx="4" fill="#1a3535" stroke="#39c5cf" stroke-width="1.5"/>
+  <text x="710" y="345" fill="#39c5cf" font-size="8" text-anchor="middle" font-family="Consolas" font-weight="bold">REAR BRUSH</text>
+  <text x="710" y="358" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">wash-assemble1 #2</text>
+  <text x="710" y="369" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">identical to front</text>
+  <line x1="605" y1="285" x2="660" y2="348" stroke="#39c5cf" stroke-width="1.5"/>
+
+  <!-- Water -->
+  <rect x="810" y="250" width="90" height="70" rx="4" fill="#1a3535" stroke="#39c5cf" stroke-width="1.5"/>
+  <text x="855" y="270" fill="#39c5cf" font-size="8" text-anchor="middle" font-family="Consolas" font-weight="bold">WATER SYSTEM</text>
+  <text x="855" y="283" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">Pump 12V</text>
+  <text x="855" y="294" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">Solenoid NC 12V</text>
+  <text x="855" y="305" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">9675T18 barb ×3</text>
+  <text x="855" y="316" fill="#8b949e" font-size="7" text-anchor="middle" font-family="Consolas">5011T11 clamp ×3</text>
+  <line x1="760" y1="270" x2="810" y2="270" stroke="#39c5cf" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+  <!-- Sensors block -->
+  <rect x="340" y="290" width="110" height="100" rx="5" fill="#161b22" stroke="#f2cc60" stroke-width="1.5"/>
+  <text x="395" y="310" fill="#f2cc60" font-size="9" text-anchor="middle" font-family="Consolas" font-weight="bold">SENSORS</text>
+  <text x="395" y="325" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">4× IR edge (TCRT5000)</text>
+  <text x="395" y="338" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">2× HC-SR04 ultrasonic</text>
+  <text x="395" y="351" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">MPU-6050 IMU</text>
+  <text x="395" y="364" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">DS3231 RTC alarm</text>
+  <text x="395" y="377" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">Cap. water level</text>
+  <line x1="395" y1="265" x2="395" y2="290" stroke="#f2cc60" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+  <!-- 24V to BTS7960 -->
+  <line x1="310" y1="158" x2="500" y2="110" stroke="#f85149" stroke-width="2"/>
+  <line x1="310" y1="158" x2="500" y2="190" stroke="#f85149" stroke-width="1.5"/>
+
+  <text x="500" y="28" fill="#8b949e" font-size="11" text-anchor="middle" font-family="Consolas">SOLARCLEANERBOT — SYSTEM WIRING OVERVIEW (Assem1.SLDASM accurate)</text>
+  <text x="500" y="42" fill="#444"    font-size="9"  text-anchor="middle" font-family="Consolas">2× GF555 differential drive · 54× track links per side · 2× brush assembly · 4× T-part water splitter</text>
+</svg>
+</div>
+
+<!-- ② POWER -->
+<div class="section-title">② POWER ARCHITECTURE</div>
+<div class="grid-2">
+  <div class="block">
+    <div class="block-title">Power Flow <span class="chip">24V → Rails</span></div>
+    <div class="rail r24v"><span>24V BATTERY PACK</span><span>3S2P 18650 or 4S LiPo · 5–6 Ah</span></div>
+    <div class="rail" style="background:#161b22;border:1px solid #30363d;color:#8b949e;">BMS 10A — over-discharge · balance · short protection</div>
+    <div class="rail r24v"><span>24V MOTOR RAIL</span><span>Direct from BMS · 20A blade fuse · feeds 2× BTS7960</span></div>
+    <div class="rail r12v"><span>12V AUX RAIL</span><span>LM2596 buck 5A · brush motors + pump + solenoid</span></div>
+    <div class="rail r5v" ><span>5V LOGIC RAIL</span><span>LM2596 buck 3A · Arduino + sensors + ESP8266</span></div>
+    <div style="padding:5px;background:#161b22;border-radius:4px;font-size:10px;color:#8b949e;margin-top:6px;">
+      Each BTS7960 has its own 10A inline fuse on the 24V feed.<br>
+      Total peak draw: 2× GF555 (~3A each) + 2× brush (~1.5A each) + pump (~1A) = ~11A @ 24V.
+    </div>
+  </div>
+  <div class="block">
+    <div class="block-title">Wire Gauge Guide</div>
+    <div class="pin"><span class="pin-name">Battery → BMS → Fuse</span><span class="pin-conn p24v">14 AWG · XT60 connectors</span></div>
+    <div class="pin"><span class="pin-name">Fuse → BTS7960 #1 B+</span><span class="pin-conn p24v">14 AWG</span></div>
+    <div class="pin"><span class="pin-name">Fuse → BTS7960 #2 B+</span><span class="pin-conn p24v">14 AWG</span></div>
+    <div class="pin"><span class="pin-name">BTS7960 → GF555 motor</span><span class="pin-conn p24v">16 AWG · short run</span></div>
+    <div class="pin"><span class="pin-name">12V rail → L298N + pump</span><span class="pin-conn p12v">18 AWG</span></div>
+    <div class="pin"><span class="pin-name">5V rail → Arduino + sensors</span><span class="pin-conn p5v">22 AWG · JST</span></div>
+    <div class="pin"><span class="pin-name">MCU signal wires</span><span class="pin-conn ppwm">26 AWG</span></div>
+    <div class="pin"><span class="pin-name">Encoder / I2C wires</span><span class="pin-conn psig">28 AWG shielded</span></div>
+  </div>
+</div>
+
+<!-- ③ DRIVE — 2× GF555 + 2× BTS7960 -->
+<div class="section-title">③ DRIVE SYSTEM — 2× GF555 MOTORS + 2× BTS7960 H-BRIDGE (DIFFERENTIAL STEERING)</div>
+<div class="grid-4">
+  <div class="block">
+    <div class="block-title" style="color:#f85149;">BTS7960 #1 <span class="chip">LEFT track driver</span></div>
+    <div class="pin"><span class="pin-name">B+ (24V)</span><span class="pin-conn p24v">24V Rail · 10A fuse</span></div>
+    <div class="pin"><span class="pin-name">B− (GND)</span><span class="pin-conn pgnd">Common GND</span></div>
+    <div class="pin"><span class="pin-name">VCC (5V)</span><span class="pin-conn p5v">5V Rail</span></div>
+    <div class="pin"><span class="pin-name">RPWM</span><span class="pin-conn ppwm">Arduino D9 (PWM FWD)</span></div>
+    <div class="pin"><span class="pin-name">LPWM</span><span class="pin-conn ppwm">Arduino D10 (PWM REV)</span></div>
+    <div class="pin"><span class="pin-name">R_EN</span><span class="pin-conn psig">Arduino D2 (HIGH=enable)</span></div>
+    <div class="pin"><span class="pin-name">L_EN</span><span class="pin-conn psig">Arduino D3 (HIGH=enable)</span></div>
+    <div class="pin"><span class="pin-name">M+ / M−</span><span class="pin-conn p24v">→ GF555 #1 (LEFT)</span></div>
+  </div>
+  <div class="block">
+    <div class="block-title" style="color:#f85149;">BTS7960 #2 <span class="chip">RIGHT track driver</span></div>
+    <div class="pin"><span class="pin-name">B+ (24V)</span><span class="pin-conn p24v">24V Rail · 10A fuse</span></div>
+    <div class="pin"><span class="pin-name">B− (GND)</span><span class="pin-conn pgnd">Common GND</span></div>
+    <div class="pin"><span class="pin-name">VCC (5V)</span><span class="pin-conn p5v">5V Rail</span></div>
+    <div class="pin"><span class="pin-name">RPWM</span><span class="pin-conn ppwm">Arduino D11 (PWM FWD)</span></div>
+    <div class="pin"><span class="pin-name">LPWM</span><span class="pin-conn ppwm">Arduino D12 (PWM REV)</span></div>
+    <div class="pin"><span class="pin-name">R_EN</span><span class="pin-conn psig">Arduino D4 (HIGH=enable)</span></div>
+    <div class="pin"><span class="pin-name">L_EN</span><span class="pin-conn psig">Arduino D5 (HIGH=enable)</span></div>
+    <div class="pin"><span class="pin-name">M+ / M−</span><span class="pin-conn p24v">→ GF555 #2 (RIGHT)</span></div>
+  </div>
+  <div class="block">
+    <div class="block-title" style="color:#3fb950;">GF555 #1 LEFT <span class="chip">copling #1 → LEFT chain</span></div>
+    <div style="font-size:10px;color:#8b949e;margin-bottom:4px;">Variklio korpusas (motor body) · 70×123×134mm · 24V geared</div>
+    <div class="pin"><span class="pin-name">Motor +</span><span class="pin-conn p24v">BTS7960 #1 M+</span></div>
+    <div class="pin"><span class="pin-name">Motor −</span><span class="pin-conn p24v">BTS7960 #1 M−</span></div>
+    <div class="pin"><span class="pin-name">Output shaft</span><span class="pin-conn pmec">copling → 27× 1ofsheni LEFT chain</span></div>
+    <div class="pin"><span class="pin-name">Encoder VCC</span><span class="pin-conn p5v">5V Rail</span></div>
+    <div class="pin"><span class="pin-name">Encoder A</span><span class="pin-conn psig">Arduino D18 (INT3)</span></div>
+    <div class="pin"><span class="pin-name">Encoder B</span><span class="pin-conn psig">Arduino D19 (INT2)</span></div>
+    <div style="margin-top:4px;font-size:10px;color:#8b949e;">3× 6260K9 idler sprockets on LEFT side<br>6× shaft_harzgard · 6× instrument bearings shared</div>
+  </div>
+  <div class="block">
+    <div class="block-title" style="color:#3fb950;">GF555 #2 RIGHT <span class="chip">copling #2 → RIGHT chain</span></div>
+    <div style="font-size:10px;color:#8b949e;margin-bottom:4px;">Variklio korpusas · identical to #1 · 243mm apart in X</div>
+    <div class="pin"><span class="pin-name">Motor +</span><span class="pin-conn p24v">BTS7960 #2 M+</span></div>
+    <div class="pin"><span class="pin-name">Motor −</span><span class="pin-conn p24v">BTS7960 #2 M−</span></div>
+    <div class="pin"><span class="pin-name">Output shaft</span><span class="pin-conn pmec">copling → 27× 1ofsheni RIGHT chain</span></div>
+    <div class="pin"><span class="pin-name">Encoder VCC</span><span class="pin-conn p5v">5V Rail</span></div>
+    <div class="pin"><span class="pin-name">Encoder A</span><span class="pin-conn psig">Arduino D20 (INT1 — note: shared I2C SDA)</span></div>
+    <div class="pin"><span class="pin-name">Encoder B</span><span class="pin-conn psig">Arduino D21 (INT0 — note: shared I2C SCL)</span></div>
+    <div style="margin-top:4px;font-size:10px;color:#f85149;">⚠ D20/D21 are also I2C SDA/SCL — use D36/D37 for encoder #2 to avoid conflict</div>
+  </div>
+</div>
+<div style="padding:0 16px 8px;">
+  <div style="background:#1a3520;border:1px solid #3fb950;border-radius:4px;padding:8px 12px;font-size:11px;color:#3fb950;">
+    ✓ DIFFERENTIAL STEERING: Forward = both motors same speed. Turn LEFT = slow/stop GF555 #1, run GF555 #2. Turn RIGHT = slow/stop GF555 #2, run GF555 #1. Spin in place = one motor forward, other reverse.
+  </div>
+</div>
+
+<!-- ④ BRUSH MOTORS -->
+<div class="section-title">④ BRUSH SYSTEM — 2× 6331K61 BRUSH MOTORS + L298N (wash-assemble1 × 2)</div>
+<div class="grid-3">
+  <div class="block">
+    <div class="block-title" style="color:#39c5cf;">L298N Dual H-bridge <span class="chip">Both brush motors</span></div>
+    <div class="pin"><span class="pin-name">VS (motor power)</span><span class="pin-conn p12v">12V Rail</span></div>
+    <div class="pin"><span class="pin-name">VSS (logic)</span><span class="pin-conn p5v">5V Rail</span></div>
+    <div class="pin"><span class="pin-name">GND</span><span class="pin-conn pgnd">Common GND</span></div>
+    <div class="pin"><span class="pin-name">ENA (PWM)</span><span class="pin-conn ppwm">Arduino D6 — FRONT brush speed</span></div>
+    <div class="pin"><span class="pin-name">ENB (PWM)</span><span class="pin-conn ppwm">Arduino D7 — REAR brush speed</span></div>
+    <div class="pin"><span class="pin-name">IN1</span><span class="pin-conn psig">Arduino D22 — FRONT dir A</span></div>
+    <div class="pin"><span class="pin-name">IN2</span><span class="pin-conn psig">Arduino D23 — FRONT dir B</span></div>
+    <div class="pin"><span class="pin-name">IN3</span><span class="pin-conn psig">Arduino D24 — REAR dir A</span></div>
+    <div class="pin"><span class="pin-name">IN4</span><span class="pin-conn psig">Arduino D25 — REAR dir B</span></div>
+    <div class="pin"><span class="pin-name">OUT1/2</span><span class="pin-conn pwat">→ 6331K61 FRONT brush motor</span></div>
+    <div class="pin"><span class="pin-name">OUT3/4</span><span class="pin-conn pwat">→ 6331K61 REAR brush motor</span></div>
+  </div>
+  <div class="block">
+    <div class="block-title" style="color:#39c5cf;">6331K61 Motor × 2 <span class="chip">McMaster-Carr DC motor</span></div>
+    <div style="font-size:10px;color:#8b949e;margin-bottom:4px;">30×37×83mm · 12V · one per wash-assemble1</div>
+    <div class="pin"><span class="pin-name">FRONT motor +/−</span><span class="pin-conn pwat">L298N OUT1/OUT2</span></div>
+    <div class="pin"><span class="pin-name">REAR motor +/−</span><span class="pin-conn pwat">L298N OUT3/OUT4</span></div>
+    <div class="pin"><span class="pin-name">Shaft → coupling</span><span class="pin-conn pmec">4147N173 flex coupling → brush shaft</span></div>
+    <div class="pin"><span class="pin-name">Belt drive</span><span class="pin-conn pmec">1277N723 pulley → Belt1-3 → 1277N725</span></div>
+    <div class="pin"><span class="pin-name">Belt1-3</span><span class="pin-conn pmec">107mm span · 11mm wide · 2 belts total</span></div>
+    <div class="pin"><span class="pin-name">Bracket</span><span class="pin-conn pmec">DC-motor-bracket · 3273T51 loop hangers ×4</span></div>
+    <div style="margin-top:4px;font-size:10px;color:#8b949e;">Add 1N4007 flyback diode across each motor terminal. L298N module usually has these built in.</div>
+  </div>
+  <div class="block">
+    <div class="block-title" style="color:#39c5cf;">Brush Assembly Details <span class="chip">wash-assemble1 × 2</span></div>
+    <div style="font-size:10px;color:#8b949e;margin-bottom:4px;">Each assembly contains (from model):</div>
+    <div class="pin"><span class="pin-name">brash roller</span><span class="pin-conn pmec">650×69×70mm microfiber roller</span></div>
+    <div class="pin"><span class="pin-name">gard (splash guard)</span><span class="pin-conn pmec">615×120×167mm aluminium</span></div>
+    <div class="pin"><span class="pin-name">water-jet pipe</span><span class="pin-conn pwat">500×22×111mm · spray holes</span></div>
+    <div class="pin"><span class="pin-name">T-part-assemble × 2</span><span class="pin-conn pwat">580×42×23mm water splitter</span></div>
+    <div class="pin"><span class="pin-name">head-of-T-cleaner × 2</span><span class="pin-conn pwat">14×23×580mm nozzle head</span></div>
+    <div class="pin"><span class="pin-name">T-cleaner-body × 2</span><span class="pin-conn pwat">23×33×580mm body</span></div>
+    <div class="pin"><span class="pin-name">5972K244 bearing × 2</span><span class="pin-conn pmec">30×30×7mm brush shaft bearings</span></div>
+    <div class="pin"><span class="pin-name">connector + connector2</span><span class="pin-conn pmec">47×40×30mm chassis lock</span></div>
+    <div class="pin"><span class="pin-name">pin × 2</span><span class="pin-conn pmec">21×4×19mm hinge pins</span></div>
+  </div>
+</div>
+
+<!-- ⑤ WATER SYSTEM -->
+<div class="section-title">⑤ WATER SYSTEM — PUMP + SOLENOID + 4× T-PART ASSEMBLIES</div>
+<div class="grid-3">
+  <div class="block">
+    <div class="block-title" style="color:#39c5cf;">Pump 12V (Peristaltic)</div>
+    <div class="pin"><span class="pin-name">Gate</span><span class="pin-conn psig">IRLZ44N ← Arduino D8</span></div>
+    <div class="pin"><span class="pin-name">Motor +12V</span><span class="pin-conn p12v">IRLZ44N Drain → 12V</span></div>
+    <div class="pin"><span class="pin-name">Source</span><span class="pin-conn pgnd">GND</span></div>
+    <div class="pin"><span class="pin-name">Flyback</span><span class="pin-conn psig">1N4007 across pump</span></div>
+  </div>
+  <div class="block">
+    <div class="block-title" style="color:#39c5cf;">NC Solenoid Valve 12V</div>
+    <div class="pin"><span class="pin-name">Gate</span><span class="pin-conn psig">IRLZ44N ← Arduino D13</span></div>
+    <div class="pin"><span class="pin-name">Coil +12V</span><span class="pin-conn p12v">IRLZ44N Drain → 12V</span></div>
+    <div class="pin"><span class="pin-name">Source</span><span class="pin-conn pgnd">GND</span></div>
+    <div class="pin"><span class="pin-name">Flyback</span><span class="pin-conn psig">1N4007 across coil</span></div>
+    <div style="margin-top:4px;font-size:10px;color:#8b949e;">Normally-closed: water off when power lost</div>
+  </div>
+  <div class="block">
+    <div class="block-title" style="color:#39c5cf;">Water Flow Path (from model)</div>
+    <div style="font-size:11px;color:#8b949e;line-height:2;">
+      Tank (350mL) → Pump →<br>
+      Solenoid valve →<br>
+      9675T18 barb fitting ×3 →<br>
+      5011T11 hose clamps ×3 →<br>
+      T-part-assemble FRONT ×2 →<br>
+      head-of-T-cleaner → water-jet pipe 500mm →<br>
+      T-part-assemble REAR ×2 →<br>
+      head-of-T-cleaner → water-jet pipe 500mm
+    </div>
+  </div>
+</div>
+
+<!-- ⑥ SENSORS -->
+<div class="section-title">⑥ SENSORS (AUTONOMOUS)</div>
+<div class="grid-4">
+  <div class="block">
+    <div class="block-title" style="color:#f2cc60;">IR Edge × 4 <span class="chip">TCRT5000</span></div>
+    <div class="pin"><span class="pin-name">FL DO</span><span class="pin-conn psig">Arduino D26</span></div>
+    <div class="pin"><span class="pin-name">FR DO</span><span class="pin-conn psig">Arduino D27</span></div>
+    <div class="pin"><span class="pin-name">RL DO</span><span class="pin-conn psig">Arduino D28</span></div>
+    <div class="pin"><span class="pin-name">RR DO</span><span class="pin-conn psig">Arduino D29</span></div>
+    <div class="pin"><span class="pin-name">All VCC</span><span class="pin-conn p5v">5V Rail</span></div>
+    <div style="margin-top:4px;font-size:10px;color:#8b949e;">LOW = on panel · HIGH = edge/air → TURN</div>
+  </div>
+  <div class="block">
+    <div class="block-title" style="color:#f2cc60;">HC-SR04 × 2 <span class="chip">Front obstacle</span></div>
+    <div class="pin"><span class="pin-name">L TRIG</span><span class="pin-conn psig">Arduino D30</span></div>
+    <div class="pin"><span class="pin-name">L ECHO</span><span class="pin-conn psig">Arduino D31 (via divider)</span></div>
+    <div class="pin"><span class="pin-name">R TRIG</span><span class="pin-conn psig">Arduino D32</span></div>
+    <div class="pin"><span class="pin-name">R ECHO</span><span class="pin-conn psig">Arduino D33 (via divider)</span></div>
+    <div class="pin"><span class="pin-name">VCC</span><span class="pin-conn p5v">5V Rail</span></div>
+    <div style="margin-top:4px;font-size:10px;color:#8b949e;">&lt;8cm → OBSTACLE state</div>
+  </div>
+  <div class="block">
+    <div class="block-title" style="color:#f2cc60;">IMU + RTC <span class="chip">I2C bus</span></div>
+    <div class="pin"><span class="pin-name">MPU-6050 SDA</span><span class="pin-conn pi2c">Arduino D20 (I2C)</span></div>
+    <div class="pin"><span class="pin-name">MPU-6050 SCL</span><span class="pin-conn pi2c">Arduino D21 (I2C)</span></div>
+    <div class="pin"><span class="pin-name">MPU-6050 AD0</span><span class="pin-conn psig">3.3V → addr 0x69</span></div>
+    <div class="pin"><span class="pin-name">DS3231 SDA</span><span class="pin-conn pi2c">Arduino D20 (shared)</span></div>
+    <div class="pin"><span class="pin-name">DS3231 SCL</span><span class="pin-conn pi2c">Arduino D21 (shared)</span></div>
+    <div class="pin"><span class="pin-name">DS3231 INT</span><span class="pin-conn psig">Arduino D2 (alarm)</span></div>
+  </div>
+  <div class="block">
+    <div class="block-title" style="color:#f2cc60;">Other Sensors</div>
+    <div class="pin"><span class="pin-name">Water level cap.</span><span class="pin-conn pi2c">Arduino A0</span></div>
+    <div class="pin"><span class="pin-name">Vbat divider</span><span class="pin-conn pi2c">Arduino A1</span></div>
+    <div class="pin"><span class="pin-name">Dock IR receiver</span><span class="pin-conn psig">Arduino D34</span></div>
+    <div class="pin"><span class="pin-name">ESP8266 RX</span><span class="pin-conn puart">Arduino TX2 D16</span></div>
+    <div class="pin"><span class="pin-name">ESP8266 TX</span><span class="pin-conn puart">Arduino RX2 D17</span></div>
+  </div>
+</div>
+
+<!-- ⑦ FULL NETLIST -->
+<div class="section-title">⑦ COMPLETE WIRING NETLIST</div>
+<div style="padding:0 16px 20px;">
+<table>
+  <tr><th>FROM</th><th>FROM PIN</th><th>TO</th><th>TO PIN</th><th>SIGNAL NAME</th><th>NOTES</th></tr>
+  <!-- Power -->
+  <tr><td class="td-from">24V Battery</td><td class="td-pin">B+/B−</td><td class="td-to">BMS 10A</td><td class="td-pin">IN+/IN−</td><td class="td-net">VBAT_RAW</td><td class="td-note">XT60 · 14AWG</td></tr>
+  <tr><td class="td-from">BMS</td><td class="td-pin">OUT+</td><td class="td-to">20A Fuse</td><td class="td-pin">IN</td><td class="td-net">VBAT_FUSED</td><td class="td-note">14AWG inline</td></tr>
+  <tr><td class="td-from">20A Fuse</td><td class="td-pin">OUT</td><td class="td-to">BTS7960 #1 B+</td><td class="td-pin">B+</td><td class="td-net">24V_MOTOR_L</td><td class="td-note">14AWG + 10A inline fuse</td></tr>
+  <tr><td class="td-from">20A Fuse</td><td class="td-pin">OUT</td><td class="td-to">BTS7960 #2 B+</td><td class="td-pin">B+</td><td class="td-net">24V_MOTOR_R</td><td class="td-note">14AWG + 10A inline fuse</td></tr>
+  <tr><td class="td-from">BMS</td><td class="td-pin">OUT+</td><td class="td-to">LM2596 #1 (12V)</td><td class="td-pin">VIN</td><td class="td-net">12V_IN</td><td class="td-note">18AWG</td></tr>
+  <tr><td class="td-from">BMS</td><td class="td-pin">OUT+</td><td class="td-to">LM2596 #2 (5V)</td><td class="td-pin">VIN</td><td class="td-net">5V_IN</td><td class="td-note">18AWG</td></tr>
+  <tr><td class="td-from">LM2596 #2</td><td class="td-pin">5V OUT</td><td class="td-to">Arduino Mega</td><td class="td-pin">VIN</td><td class="td-net">5V_LOGIC</td><td class="td-note">22AWG</td></tr>
+  <!-- Drive LEFT -->
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D9 PWM</td><td class="td-to">BTS7960 #1</td><td class="td-pin">RPWM</td><td class="td-net">LEFT_FWD_PWM</td><td class="td-note">26AWG</td></tr>
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D10 PWM</td><td class="td-to">BTS7960 #1</td><td class="td-pin">LPWM</td><td class="td-net">LEFT_REV_PWM</td><td class="td-note">26AWG</td></tr>
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D2</td><td class="td-to">BTS7960 #1</td><td class="td-pin">R_EN</td><td class="td-net">LEFT_FWD_EN</td><td class="td-note">26AWG</td></tr>
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D3</td><td class="td-to">BTS7960 #1</td><td class="td-pin">L_EN</td><td class="td-net">LEFT_REV_EN</td><td class="td-note">26AWG</td></tr>
+  <tr><td class="td-from">BTS7960 #1</td><td class="td-pin">M+/M−</td><td class="td-to">GF555 #1 LEFT</td><td class="td-pin">+/−</td><td class="td-net">MOTOR_LEFT</td><td class="td-note">16AWG + 1N4007</td></tr>
+  <!-- Drive RIGHT -->
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D11 PWM</td><td class="td-to">BTS7960 #2</td><td class="td-pin">RPWM</td><td class="td-net">RIGHT_FWD_PWM</td><td class="td-note">26AWG</td></tr>
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D12 PWM</td><td class="td-to">BTS7960 #2</td><td class="td-pin">LPWM</td><td class="td-net">RIGHT_REV_PWM</td><td class="td-note">26AWG</td></tr>
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D4</td><td class="td-to">BTS7960 #2</td><td class="td-pin">R_EN</td><td class="td-net">RIGHT_FWD_EN</td><td class="td-note">26AWG</td></tr>
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D5</td><td class="td-to">BTS7960 #2</td><td class="td-pin">L_EN</td><td class="td-net">RIGHT_REV_EN</td><td class="td-note">26AWG</td></tr>
+  <tr><td class="td-from">BTS7960 #2</td><td class="td-pin">M+/M−</td><td class="td-to">GF555 #2 RIGHT</td><td class="td-pin">+/−</td><td class="td-net">MOTOR_RIGHT</td><td class="td-note">16AWG + 1N4007</td></tr>
+  <!-- Encoders -->
+  <tr><td class="td-from">GF555 #1 encoder</td><td class="td-pin">A/B</td><td class="td-to">Arduino</td><td class="td-pin">D18/D19</td><td class="td-net">ENC_L_A/B</td><td class="td-note">28AWG shielded</td></tr>
+  <tr><td class="td-from">GF555 #2 encoder</td><td class="td-pin">A/B</td><td class="td-to">Arduino</td><td class="td-pin">D36/D37</td><td class="td-net">ENC_R_A/B</td><td class="td-note">28AWG shielded</td></tr>
+  <!-- Brush -->
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D6 PWM</td><td class="td-to">L298N</td><td class="td-pin">ENA</td><td class="td-net">BRUSH_FRONT_SPD</td><td class="td-note">26AWG</td></tr>
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D7 PWM</td><td class="td-to">L298N</td><td class="td-pin">ENB</td><td class="td-net">BRUSH_REAR_SPD</td><td class="td-note">26AWG</td></tr>
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D22/D23</td><td class="td-to">L298N</td><td class="td-pin">IN1/IN2</td><td class="td-net">BRUSH_FRONT_DIR</td><td class="td-note">26AWG</td></tr>
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D24/D25</td><td class="td-to">L298N</td><td class="td-pin">IN3/IN4</td><td class="td-net">BRUSH_REAR_DIR</td><td class="td-note">26AWG</td></tr>
+  <tr><td class="td-from">L298N</td><td class="td-pin">OUT1/2</td><td class="td-to">6331K61 FRONT</td><td class="td-pin">+/−</td><td class="td-net">MOTOR_BRUSH_F</td><td class="td-note">16AWG</td></tr>
+  <tr><td class="td-from">L298N</td><td class="td-pin">OUT3/4</td><td class="td-to">6331K61 REAR</td><td class="td-pin">+/−</td><td class="td-net">MOTOR_BRUSH_R</td><td class="td-note">16AWG</td></tr>
+  <!-- Water -->
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D8</td><td class="td-to">IRLZ44N (Pump)</td><td class="td-pin">Gate</td><td class="td-net">PUMP_CTRL</td><td class="td-note">+ 1N4007</td></tr>
+  <tr><td class="td-from">Arduino</td><td class="td-pin">D13</td><td class="td-to">IRLZ44N (Sol.)</td><td class="td-pin">Gate</td><td class="td-net">SOL_CTRL</td><td class="td-note">NC valve</td></tr>
+  <!-- Sensors -->
+  <tr><td class="td-from">IR FL</td><td class="td-pin">DO</td><td class="td-to">Arduino</td><td class="td-pin">D26</td><td class="td-net">EDGE_FL</td><td class="td-note">corner FL</td></tr>
+  <tr><td class="td-from">IR FR</td><td class="td-pin">DO</td><td class="td-to">Arduino</td><td class="td-pin">D27</td><td class="td-net">EDGE_FR</td><td class="td-note">corner FR</td></tr>
+  <tr><td class="td-from">IR RL</td><td class="td-pin">DO</td><td class="td-to">Arduino</td><td class="td-pin">D28</td><td class="td-net">EDGE_RL</td><td class="td-note">corner RL</td></tr>
+  <tr><td class="td-from">IR RR</td><td class="td-pin">DO</td><td class="td-to">Arduino</td><td class="td-pin">D29</td><td class="td-net">EDGE_RR</td><td class="td-note">corner RR</td></tr>
+  <tr><td class="td-from">HC-SR04 L</td><td class="td-pin">TRIG/ECHO</td><td class="td-to">Arduino</td><td class="td-pin">D30/D31</td><td class="td-net">US_L</td><td class="td-note">echo via divider</td></tr>
+  <tr><td class="td-from">HC-SR04 R</td><td class="td-pin">TRIG/ECHO</td><td class="td-to">Arduino</td><td class="td-pin">D32/D33</td><td class="td-net">US_R</td><td class="td-note">echo via divider</td></tr>
+  <tr><td class="td-from">MPU-6050</td><td class="td-pin">SDA/SCL</td><td class="td-to">Arduino</td><td class="td-pin">D20/D21</td><td class="td-net">I2C_IMU</td><td class="td-note">4.7kΩ pull-ups</td></tr>
+  <tr><td class="td-from">DS3231 RTC</td><td class="td-pin">SDA/SCL</td><td class="td-to">Arduino</td><td class="td-pin">D20/D21</td><td class="td-net">I2C_RTC</td><td class="td-note">shared bus</td></tr>
+  <tr><td class="td-from">DS3231</td><td class="td-pin">SQW/INT</td><td class="td-to">Arduino</td><td class="td-pin">D2 (INT5)</td><td class="td-net">RTC_ALARM</td><td class="td-note">daily start trigger</td></tr>
+  <tr><td class="td-from">Cap. water sensor</td><td class="td-pin">OUT</td><td class="td-to">Arduino</td><td class="td-pin">A0</td><td class="td-net">WATER_LVL</td><td class="td-note">analog</td></tr>
+  <tr><td class="td-from">Vbat divider</td><td class="td-pin">mid</td><td class="td-to">Arduino</td><td class="td-pin">A1</td><td class="td-net">VBAT_SENSE</td><td class="td-note">100k+10k</td></tr>
+  <tr><td class="td-from">Dock IR receiver</td><td class="td-pin">OUT</td><td class="td-to">Arduino</td><td class="td-pin">D34</td><td class="td-note">DOCK_SENSE</td><td class="td-note">active LOW</td></tr>
+  <tr><td class="td-from">ESP8266</td><td class="td-pin">TX/RX</td><td class="td-to">Arduino</td><td class="td-pin">D17/D16 (Serial2)</td><td class="td-net">WIFI_UART</td><td class="td-note">115200 baud</td></tr>
+</table>
+</div>
+
+<!-- ⑧ COMPONENT COUNT FROM MODEL -->
+<div class="section-title">⑧ EXACT COMPONENT COUNT FROM ASSEM1.SLDASM</div>
+<div style="padding:0 16px 20px;">
+<table>
+  <tr><th>Part (Model Name)</th><th>Qty in Model</th><th>Dims (mm)</th><th>Category</th><th>Notes</th></tr>
+  <tr><td class="td-from">GF555.STEP (Variklio korpusas)</td><td>2</td><td>70×123×134</td><td>Drive motor</td><td>One per track side — differential steering</td></tr>
+  <tr><td class="td-from">copling</td><td>2</td><td>41×30×30</td><td>Shaft coupling</td><td>Connects GF555 shaft to track chain</td></tr>
+  <tr><td class="td-from">1ofsheni (track links)</td><td>54</td><td>49×17×51</td><td>Track</td><td>27 per side (LEFT and RIGHT chains)</td></tr>
+  <tr><td class="td-from">sheni (sprocket)</td><td>54</td><td>50×45×10</td><td>Track sprocket</td><td>One per 1ofsheni link shaft</td></tr>
+  <tr><td class="td-from">shaft_sheni</td><td>54</td><td>49×3×3</td><td>Link shaft</td><td>One per track link</td></tr>
+  <tr><td class="td-from">6260K9 Idler Sprocket</td><td>6</td><td>72×72×43</td><td>Idler sprocket</td><td>3 per side — guide and tension track</td></tr>
+  <tr><td class="td-from">shaft_harzgard</td><td>6</td><td>10×10×75</td><td>Idler shaft</td><td>One per idler sprocket</td></tr>
+  <tr><td class="td-from">instrument ball bearing_ai</td><td>6</td><td>4×16×16</td><td>Bearing</td><td>One per idler shaft</td></tr>
+  <tr><td class="td-from">radial ball bearing_68_am</td><td>1</td><td>5×44×44</td><td>Main bearing</td><td>Main drive shaft — large side</td></tr>
+  <tr><td class="td-from">radial ball bearing_68_am (1)</td><td>1</td><td>5×37×37</td><td>Main bearing</td><td>Main drive shaft — smaller side</td></tr>
+  <tr><td class="td-from">ST-320</td><td>1</td><td>49×25×42</td><td>Track module</td><td>Complete rubber track assembly</td></tr>
+  <tr><td class="td-from">Axe.step</td><td>1</td><td>49×22×24</td><td>Drive axle</td><td>Main drive axle connecting both chains</td></tr>
+  <tr><td class="td-from">Composant2.step</td><td>1</td><td>1×24×24</td><td>Retaining part</td><td>Thin disc — shaft retainer or spacer</td></tr>
+  <tr><td class="td-from">90967A220 Retaining Ring</td><td>1</td><td>1×23×20</td><td>Circlip</td><td>External retaining ring — shaft end</td></tr>
+  <tr><td class="td-from">loleh</td><td>1</td><td>445×20×75</td><td>Tensioner pulley</td><td>Track tension adjustment bar</td></tr>
+  <tr><td class="td-from">loleh_dakheli</td><td>1</td><td>715×149×20</td><td>Inner guide</td><td>Inner track guide plate</td></tr>
+  <tr><td class="td-from">wash-assemble1</td><td>2</td><td>650×193×219</td><td>Brush assembly</td><td>Front and rear brush/wash units</td></tr>
+  <tr><td class="td-from">brash</td><td>2</td><td>650×69×70</td><td>Brush roller</td><td>Microfiber cleaning roller</td></tr>
+  <tr><td class="td-from">gard</td><td>2</td><td>615×120×167</td><td>Splash guard</td><td>Water/debris deflector</td></tr>
+  <tr><td class="td-from">water-jet</td><td>2</td><td>500×22×111</td><td>Water nozzle</td><td>Spray pipe — one per brush assembly</td></tr>
+  <tr><td class="td-from">T-part-assemble</td><td>4</td><td>580×42×23</td><td>Water splitter</td><td>2 per brush assembly</td></tr>
+  <tr><td class="td-from">head-of-T-cleaner</td><td>4</td><td>14×23×580</td><td>Nozzle head</td><td>T-part nozzle head — 2 per brush assy</td></tr>
+  <tr><td class="td-from">T-cleaner-body</td><td>4</td><td>23×33×580</td><td>T-part body</td><td>T-part tube body — 2 per brush assy</td></tr>
+  <tr><td class="td-from">6331K61 DC Motor</td><td>2</td><td>30×37×83</td><td>Brush motor</td><td>One per brush assembly</td></tr>
+  <tr><td class="td-from">DC-motor-bracket</td><td>2</td><td>61×36×35</td><td>Motor bracket</td><td>Holds brush motor</td></tr>
+  <tr><td class="td-from">4147N173 Flex Coupling</td><td>2</td><td>25×25×38</td><td>Shaft coupling</td><td>Motor → brush roller shaft</td></tr>
+  <tr><td class="td-from">1277N723 Belt Pulley (small)</td><td>2</td><td>54×54×23</td><td>Pulley</td><td>On brush motor shaft</td></tr>
+  <tr><td class="td-from">1277N725 Belt Pulley (large)</td><td>2</td><td>57×57×23</td><td>Pulley</td><td>On brush roller shaft</td></tr>
+  <tr><td class="td-from">Belt1-3</td><td>2</td><td>107×171×11</td><td>Timing belt</td><td>Motor → brush roller drive</td></tr>
+  <tr><td class="td-from">3273T51 Loop Hanger</td><td>4</td><td>31×62×22</td><td>Bracket</td><td>2 per brush assembly — motor support</td></tr>
+  <tr><td class="td-from">5972K244 Ball Bearing</td><td>4</td><td>30×30×7</td><td>Bearing</td><td>2 per brush assembly — roller shaft ends</td></tr>
+  <tr><td class="td-from">connector + connector2</td><td>2+2=4</td><td>47×40×30</td><td>Chassis lock</td><td>Lock brush assembly to chassis</td></tr>
+  <tr><td class="td-from">pin</td><td>4</td><td>21×4×19</td><td>Hinge pin</td><td>2 per brush assembly — articulation</td></tr>
+  <tr><td class="td-from">motor-DC-shaft</td><td>2</td><td>10×43×10</td><td>Shaft extension</td><td>Extends brush motor shaft to pulley</td></tr>
+  <tr><td class="td-from">9675T18 Barbed Fitting</td><td>3</td><td>67×17×17</td><td>Plumbing</td><td>Water hose barb connectors</td></tr>
+  <tr><td class="td-from">5011T11 Hose Clamp</td><td>3</td><td>28×30×17</td><td>Plumbing</td><td>Worm-drive clamps on hose joints</td></tr>
+  <tr><td class="td-from">structure</td><td>1</td><td>~1015×189×156cm*</td><td>Chassis</td><td>*Unit anomaly in model. Main frame.</td></tr>
+  <tr><td class="td-from">main_body</td><td>1</td><td>650×303×500</td><td>Body shell</td><td>Top cover / body enclosure</td></tr>
+  <tr><td class="td-from">rabet</td><td>1</td><td>450×30×50</td><td>Frame bar</td><td>Connecting frame bar</td></tr>
+  <tr><td class="td-from">gholab</td><td>1</td><td>51×7×48</td><td>Frame piece</td><td>Internal frame sub-part</td></tr>
+  <tr><td class="td-from">loleh_dakheli</td><td>1</td><td>715×149×20</td><td>Inner guide</td><td>Track inner guide</td></tr>
+  <tr><td class="td-from">dasteh</td><td>2</td><td>12×32×91</td><td>Handle bracket</td><td>Side handles</td></tr>
+  <tr><td class="td-from">3rahi</td><td>1</td><td>24×37×60</td><td>3-way bracket</td><td>Junction bracket</td></tr>
+</table>
+</div>
+
+<div style="text-align:center;padding:12px;color:#30363d;font-size:10px;border-top:1px solid #21262d;">
+  SolarCleanerBot · Wiring Diagram · Model-accurate from Assem1.SLDASM · 55 unique parts · 2× GF555 · 54× track links · Generated 2026-05-15
+</div>
+</body>
+</html>

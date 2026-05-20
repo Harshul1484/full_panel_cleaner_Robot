@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SolarCleanerBot — Mechanical Build Guide</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0d1117; color: #e6edf3; font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; line-height: 1.8; }
+h1 { text-align:center; padding:22px 16px; font-size:22px; color:#58a6ff; border-bottom:2px solid #30363d; letter-spacing:2px; }
+.subtitle { text-align:center; color:#8b949e; font-size:11px; padding:6px; }
+
+/* Phase container */
+.phase { margin:14px 16px; border:1px solid #30363d; border-radius:10px; overflow:hidden; }
+.phase-hdr { background:#161b22; padding:14px 18px; border-bottom:1px solid #30363d; display:flex; align-items:center; gap:14px; }
+.phase-num { background:#21262d; color:#58a6ff; border:2px solid #58a6ff; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:15px; flex-shrink:0; }
+.phase-title { font-size:15px; font-weight:bold; color:#e6edf3; }
+.phase-sub   { font-size:10px; color:#8b949e; margin-top:2px; }
+.phase-body  { padding:16px 18px; }
+
+/* Steps */
+.step { border-left:4px solid #58a6ff; padding:10px 14px; margin:12px 0; background:#0d1117; border-radius:0 6px 6px 0; }
+.step-num   { color:#58a6ff; font-size:10px; font-weight:bold; letter-spacing:2px; margin-bottom:4px; }
+.step-title { color:#e6edf3; font-size:14px; font-weight:bold; margin-bottom:8px; }
+.step p     { color:#cdd9e5; margin-bottom:6px; }
+.step ul    { padding-left:20px; color:#cdd9e5; }
+.step ul li { padding:3px 0; }
+.step ul li::marker { color:#58a6ff; }
+
+/* Alerts */
+.warn   { background:#2d1a00; border-left:4px solid #fb8f44; border-radius:0 4px 4px 0; padding:10px 14px; margin:10px 0; color:#fb8f44; font-size:12px; }
+.danger { background:#3a0d0d; border-left:4px solid #f85149; border-radius:0 4px 4px 0; padding:10px 14px; margin:10px 0; color:#f85149; font-size:12px; }
+.tip    { background:#1a3520; border-left:4px solid #3fb950; border-radius:0 4px 4px 0; padding:10px 14px; margin:10px 0; color:#3fb950; font-size:12px; }
+.info   { background:#1a2a40; border-left:4px solid #58a6ff; border-radius:0 4px 4px 0; padding:10px 14px; margin:10px 0; color:#79c0ff; font-size:12px; }
+
+/* Tables */
+table { width:100%; border-collapse:collapse; margin:10px 0; font-size:12px; }
+th { background:#21262d; color:#8b949e; padding:7px 10px; text-align:left; border:1px solid #30363d; letter-spacing:1px; font-size:10px; }
+td { padding:6px 10px; border:1px solid #21262d; }
+tr:nth-child(even) { background:#161b22; }
+tr:hover { background:#1c2128; }
+.c1 { color:#58a6ff; font-weight:bold; }
+.c2 { color:#3fb950; }
+.c3 { color:#f2cc60; }
+.c4 { color:#fb8f44; }
+.c5 { color:#f85149; }
+
+/* SVG diagrams */
+.dia { margin:12px 0; overflow-x:auto; background:#0d1117; border:1px solid #21262d; border-radius:8px; padding:10px; }
+
+/* Grid */
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:10px 0; }
+.g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:10px 0; }
+.card { background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px 14px; }
+.card-t { font-weight:bold; margin-bottom:6px; font-size:12px; }
+
+/* TOC */
+.toc { margin:12px 16px; background:#161b22; border:1px solid #30363d; border-radius:8px; padding:16px 20px; }
+.toc a { color:#58a6ff; text-decoration:none; display:block; padding:3px 0; font-size:12px; }
+.toc a:hover { color:#79c0ff; text-decoration:underline; }
+.toc-ph { color:#f2cc60; font-size:10px; letter-spacing:2px; margin:10px 0 3px; text-transform:uppercase; }
+
+/* Checklist */
+.chk { list-style:none; padding:0; }
+.chk li { padding:3px 0; color:#cdd9e5; }
+.chk li::before { content:"☐  "; color:#58a6ff; font-size:14px; }
+
+/* Tag badges */
+.badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:9px; font-weight:bold; margin-left:6px; vertical-align:middle; }
+.b-laser  { background:#1a3520; color:#3fb950; border:1px solid #3fb950; }
+.b-3dp    { background:#1a2a40; color:#58a6ff; border:1px solid #58a6ff; }
+.b-cut    { background:#3a1a00; color:#fb8f44; border:1px solid #fb8f44; }
+.b-drill  { background:#2a1a40; color:#d2a8ff; border:1px solid #d2a8ff; }
+.b-buy    { background:#1a3535; color:#39c5cf; border:1px solid #39c5cf; }
+.b-mach   { background:#3a0d0d; color:#f85149; border:1px solid #f85149; }
+
+.section-label { color:#8b949e; font-size:10px; letter-spacing:3px; text-transform:uppercase; padding:10px 0 4px; border-top:1px solid #21262d; margin-top:16px; }
+</style>
+</head>
+<body>
+
+<h1>SOLARCLEANERBOT — MECHANICAL BUILD GUIDE</h1>
+<div class="subtitle">Panel: 2000 × 1000 mm · 2× GF555 Differential Drive · Material: Mild Steel + 3D Print (NO aluminium) · Tools: Laser/Hacksaw, 3D Printer, Drill, Grinder</div>
+
+<!-- LEGEND -->
+<div style="display:flex;gap:10px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid #21262d;font-size:11px;">
+  <span class="badge b-laser" style="font-size:11px;padding:3px 10px;">LASER CUT</span> Flat sheet parts cut by laser
+  &nbsp;&nbsp;
+  <span class="badge b-3dp"   style="font-size:11px;padding:3px 10px;">3D PRINT</span> Print on FDM printer
+  &nbsp;&nbsp;
+  <span class="badge b-cut"   style="font-size:11px;padding:3px 10px;">CUT/GRIND</span> Hacksaw or angle grinder
+  &nbsp;&nbsp;
+  <span class="badge b-drill" style="font-size:11px;padding:3px 10px;">DRILL</span> Drill press or hand drill
+  &nbsp;&nbsp;
+  <span class="badge b-buy"   style="font-size:11px;padding:3px 10px;">BUY</span> Purchase ready-made
+  &nbsp;&nbsp;
+  <span class="badge b-mach"  style="font-size:11px;padding:3px 10px;">MACHINE</span> Lathe / milling needed
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div style="font-weight:bold;color:#e6edf3;font-size:14px;margin-bottom:8px;">TABLE OF CONTENTS</div>
+  <div class="toc-ph">Understanding the robot</div>
+  <a href="#p0">How the robot works mechanically</a>
+  <div class="toc-ph">Phase 1 — Materials & Shopping</div>
+  <a href="#p1a">Complete laser cut parts list</a>
+  <a href="#p1b">Mild steel stock to buy and cut to size (no aluminium)</a>
+  <a href="#p1c">3D printed parts list</a>
+  <a href="#p1d">Bolts, nuts, bearings — full hardware list with sizes</a>
+  <a href="#p1e">Ready-made bought parts</a>
+  <div class="toc-ph">Phase 2 — Chassis Frame</div>
+  <a href="#p2">Building the main frame step by step</a>
+  <div class="toc-ph">Phase 3 — Drive System</div>
+  <a href="#p3">Track drive: 2× GF555 motors (differential) + sprockets + ST-320 chain</a>
+  <div class="toc-ph">Phase 4 — Brush Wash Assembly</div>
+  <a href="#p4">Brush rollers + motor + belt drive + water jet</a>
+  <div class="toc-ph">Phase 5 — Sensor Mounting</div>
+  <a href="#p5">All sensors — exact positions and how to mount them</a>
+  <div class="toc-ph">Phase 6 — Final Assembly</div>
+  <a href="#p6">Putting it all together in order</a>
+  <div class="toc-ph">Phase 7 — Checks Before First Run</div>
+  <a href="#p7">Mechanical checklist before powering on</a>
+</div>
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<div class="phase" id="p0">
+  <div class="phase-hdr">
+    <div class="phase-num">0</div>
+    <div>
+      <div class="phase-title">HOW THE ROBOT WORKS — READ THIS FIRST</div>
+      <div class="phase-sub">Simple explanation of every mechanical part before you build anything</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <!-- Top view robot diagram — model-accurate: 2× GF555 differential drive -->
+    <div class="dia">
+    <svg width="100%" viewBox="0 0 860 400" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- ── Direction label ── -->
+      <text x="430" y="22" fill="#8b949e" font-size="11" text-anchor="middle" font-family="Arial">▲  FRONT — Direction of travel</text>
+
+      <!-- ══════════════════════════════════════════════════════
+           TRACKS  (model: left track sprocket centers at X≈13080,
+                          right track sprocket centers at X≈13523,
+                          track depth in Z: 6093–6491 mm = ~400mm length)
+           SVG mapping:  left track x=95, right track x=665, height=280
+      ═════════════════════════════════════════════════════════ -->
+
+      <!-- Left ST-320 track -->
+      <rect x="95"  y="55" width="60" height="280" rx="10" fill="#1a2030" stroke="#58a6ff" stroke-width="2"/>
+      <text x="125" y="200" fill="#58a6ff" font-size="9" text-anchor="middle" font-family="Arial" transform="rotate(-90,125,200)">ST-320 RUBBER TRACK (LEFT)</text>
+      <!-- Left idler sprockets — 3 per side at front/center/rear -->
+      <circle cx="125" cy="78"  r="16" fill="#21262d" stroke="#f2cc60" stroke-width="2"/>
+      <text x="125" y="82"  fill="#f2cc60" font-size="7" text-anchor="middle" font-family="Arial" font-weight="bold">SP</text>
+      <circle cx="125" cy="195" r="16" fill="#21262d" stroke="#f2cc60" stroke-width="2"/>
+      <text x="125" y="199" fill="#f2cc60" font-size="7" text-anchor="middle" font-family="Arial" font-weight="bold">SP</text>
+      <circle cx="125" cy="315" r="16" fill="#21262d" stroke="#f2cc60" stroke-width="2"/>
+      <text x="125" y="319" fill="#f2cc60" font-size="7" text-anchor="middle" font-family="Arial" font-weight="bold">SP</text>
+
+      <!-- Right ST-320 track -->
+      <rect x="705" y="55" width="60" height="280" rx="10" fill="#1a2030" stroke="#58a6ff" stroke-width="2"/>
+      <text x="735" y="200" fill="#58a6ff" font-size="9" text-anchor="middle" font-family="Arial" transform="rotate(90,735,200)">ST-320 RUBBER TRACK (RIGHT)</text>
+      <!-- Right idler sprockets — 3 per side -->
+      <circle cx="735" cy="78"  r="16" fill="#21262d" stroke="#f2cc60" stroke-width="2"/>
+      <text x="735" y="82"  fill="#f2cc60" font-size="7" text-anchor="middle" font-family="Arial" font-weight="bold">SP</text>
+      <circle cx="735" cy="195" r="16" fill="#21262d" stroke="#f2cc60" stroke-width="2"/>
+      <text x="735" y="199" fill="#f2cc60" font-size="7" text-anchor="middle" font-family="Arial" font-weight="bold">SP</text>
+      <circle cx="735" cy="315" r="16" fill="#21262d" stroke="#f2cc60" stroke-width="2"/>
+      <text x="735" y="319" fill="#f2cc60" font-size="7" text-anchor="middle" font-family="Arial" font-weight="bold">SP</text>
+
+      <!-- ══════════════════════════════════════════════════════
+           MAIN CHASSIS BODY  (between tracks, x=155–705, y=55–335)
+      ═════════════════════════════════════════════════════════ -->
+      <rect x="155" y="55" width="550" height="280" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+
+      <!-- ══════════════════════════════════════════════════════
+           BRUSH ASSEMBLIES
+           Model: wash-assemble1 FRONT center Z=5960 (lower Z = front of robot)
+                  wash-assemble1 REAR  center Z=6629 (higher Z = rear)
+           Both: 650mm wide × 277mm deep × 287mm height
+      ═════════════════════════════════════════════════════════ -->
+
+      <!-- FRONT brush assembly (wash-assemble1 #1, front) -->
+      <rect x="158" y="58"  width="544" height="52" rx="4" fill="#1a3535" stroke="#39c5cf" stroke-width="2"/>
+      <text x="430" y="80"  fill="#39c5cf" font-size="11" text-anchor="middle" font-family="Arial" font-weight="bold">FRONT BRUSH ROLLER — 650mm wide (brash)</text>
+      <text x="430" y="94"  fill="#39c5cf" font-size="8"  text-anchor="middle" font-family="Arial">2× T-part-assemble water splitters inside</text>
+
+      <!-- REAR brush assembly (wash-assemble1 #2, rear) -->
+      <rect x="158" y="280" width="544" height="52" rx="4" fill="#1a3535" stroke="#39c5cf" stroke-width="2"/>
+      <text x="430" y="302" fill="#39c5cf" font-size="11" text-anchor="middle" font-family="Arial" font-weight="bold">REAR BRUSH ROLLER — 650mm wide (brash)</text>
+      <text x="430" y="316" fill="#39c5cf" font-size="8"  text-anchor="middle" font-family="Arial">2× T-part-assemble water splitters inside</text>
+
+      <!-- Water jet pipes — one per brush assembly -->
+      <rect x="210" y="115" width="440" height="14" rx="3" fill="#0d2020" stroke="#39c5cf" stroke-width="1" stroke-dasharray="5,3"/>
+      <text x="430" y="125" fill="#39c5cf" font-size="8" text-anchor="middle" font-family="Arial">WATER JET PIPE — 500mm (water-jet)</text>
+
+      <!-- ══════════════════════════════════════════════════════
+           GF555 MOTORS — model-accurate positions
+           Model X positions: GF555#1 center=13201, GF555#2 center=13401
+           Track centers: L=13080, R=13523  →  total span 443mm
+           GF555#1 is 121mm from left track center  → left-of-center
+           GF555#2 is 122mm from right track center → right-of-center
+           SVG track centers: L=125, R=735 → span=610px
+           Scale: 610/443 = 1.377 px/mm
+           GF555#1 SVG X = 125 + 121×1.377 = 125+166 = 291 → center ≈ 291
+           GF555#2 SVG X = 735 - 122×1.377 = 735-168 = 567 → center ≈ 567
+           Motor box width ≈ 133.5mm × 1.377 = 184px → use 110px (visible)
+           Motor box height ≈ 141.3mm × 1.377 = 195px → use 80px
+           Y center of chassis body = (55+335)/2 = 195
+      ═════════════════════════════════════════════════════════ -->
+
+      <!-- GF555 #1 — LEFT motor (drives left track) -->
+      <rect x="222" y="155" width="115" height="80" rx="6" fill="#1a2a40" stroke="#58a6ff" stroke-width="2.5"/>
+      <text x="280" y="179" fill="#58a6ff" font-size="10" text-anchor="middle" font-family="Arial" font-weight="bold">GF555 #1</text>
+      <text x="280" y="192" fill="#58a6ff" font-size="10" text-anchor="middle" font-family="Arial" font-weight="bold">LEFT</text>
+      <text x="280" y="205" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Arial">BTS7960 #1</text>
+      <text x="280" y="217" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Arial">→ left track</text>
+      <!-- Shaft line from left motor to left track -->
+      <line x1="222" y1="195" x2="155" y2="195" stroke="#58a6ff" stroke-width="2" stroke-dasharray="4,2"/>
+      <polygon points="157,191 155,195 157,199" fill="#58a6ff"/>
+      <text x="188" y="188" fill="#58a6ff" font-size="7" text-anchor="middle" font-family="Arial">shaft</text>
+
+      <!-- GF555 #2 — RIGHT motor (drives right track) -->
+      <rect x="523" y="155" width="115" height="80" rx="6" fill="#1a2a40" stroke="#79c0ff" stroke-width="2.5"/>
+      <text x="580" y="179" fill="#79c0ff" font-size="10" text-anchor="middle" font-family="Arial" font-weight="bold">GF555 #2</text>
+      <text x="580" y="192" fill="#79c0ff" font-size="10" text-anchor="middle" font-family="Arial" font-weight="bold">RIGHT</text>
+      <text x="580" y="205" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Arial">BTS7960 #2</text>
+      <text x="580" y="217" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Arial">→ right track</text>
+      <!-- Shaft line from right motor to right track -->
+      <line x1="638" y1="195" x2="705" y2="195" stroke="#79c0ff" stroke-width="2" stroke-dasharray="4,2"/>
+      <polygon points="703,191 705,195 703,199" fill="#79c0ff"/>
+      <text x="672" y="188" fill="#79c0ff" font-size="7" text-anchor="middle" font-family="Arial">shaft</text>
+
+      <!-- Differential drive label between the two motors -->
+      <text x="430" y="168" fill="#3fb950" font-size="9" text-anchor="middle" font-family="Arial" font-weight="bold">DIFFERENTIAL DRIVE</text>
+      <text x="430" y="181" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Arial">Same speed → straight</text>
+      <text x="430" y="193" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Arial">Diff speed → turn</text>
+      <text x="430" y="205" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Arial">Opposite → spin in place</text>
+
+      <!-- Shaft couplings (copling) at motor-to-shaft junction -->
+      <rect x="207" y="189" width="15" height="12" rx="2" fill="#f2cc60" stroke="#f2cc60" stroke-width="1"/>
+      <rect x="638" y="189" width="15" height="12" rx="2" fill="#f2cc60" stroke="#f2cc60" stroke-width="1"/>
+
+      <!-- ══════════════════════════════════════════════════════
+           SENSORS
+      ═════════════════════════════════════════════════════════ -->
+
+      <!-- IR edge sensors — 4 corners (TCRT5000) -->
+      <circle cx="160" cy="62"  r="9" fill="#3a0d0d" stroke="#f85149" stroke-width="2"/>
+      <text x="160" y="66"  fill="#f85149" font-size="7" text-anchor="middle" font-family="Arial">IR</text>
+      <circle cx="700" cy="62"  r="9" fill="#3a0d0d" stroke="#f85149" stroke-width="2"/>
+      <text x="700" y="66"  fill="#f85149" font-size="7" text-anchor="middle" font-family="Arial">IR</text>
+      <circle cx="160" cy="328" r="9" fill="#3a0d0d" stroke="#f85149" stroke-width="2"/>
+      <text x="160" y="332" fill="#f85149" font-size="7" text-anchor="middle" font-family="Arial">IR</text>
+      <circle cx="700" cy="328" r="9" fill="#3a0d0d" stroke="#f85149" stroke-width="2"/>
+      <text x="700" y="332" fill="#f85149" font-size="7" text-anchor="middle" font-family="Arial">IR</text>
+
+      <!-- Ultrasonic sensors — 2× front (HC-SR04) -->
+      <rect x="340" y="34" width="52" height="20" rx="3" fill="#3a1a00" stroke="#fb8f44" stroke-width="1.5"/>
+      <text x="366" y="47" fill="#fb8f44" font-size="8" text-anchor="middle" font-family="Arial">US-L</text>
+      <rect x="468" y="34" width="52" height="20" rx="3" fill="#3a1a00" stroke="#fb8f44" stroke-width="1.5"/>
+      <text x="494" y="47" fill="#fb8f44" font-size="8" text-anchor="middle" font-family="Arial">US-R</text>
+
+      <!-- Dock IR sensor — rear center -->
+      <rect x="397" y="335" width="66" height="16" rx="3" fill="#1a3520" stroke="#3fb950" stroke-width="1.5"/>
+      <text x="430" y="346" fill="#3fb950" font-size="7" text-anchor="middle" font-family="Arial">DOCK IR</text>
+
+      <!-- loleh_dakheli — track inner guide -->
+      <rect x="158" y="58" width="544" height="4" rx="1" fill="#30363d" opacity="0.6"/>
+      <rect x="158" y="328" width="544" height="4" rx="1" fill="#30363d" opacity="0.6"/>
+
+      <!-- ══════════════════════════════════════════════════════
+           LABELS & LEGEND
+      ═════════════════════════════════════════════════════════ -->
+      <text x="430" y="378" fill="#8b949e" font-size="10" text-anchor="middle" font-family="Arial">Model: Assem1.SLDASM · Robot body ~715mm long × 585mm wide · Panel: 2000×1000mm</text>
+
+      <!-- Legend -->
+      <rect x="5" y="240" width="105" height="100" rx="4" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+      <text x="57"  y="255" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Arial">LEGEND</text>
+      <rect x="12"  y="262" width="10" height="6" fill="#1a3535" stroke="#39c5cf" stroke-width="1"/>
+      <text x="27"  y="269" fill="#39c5cf" font-size="8" font-family="Arial">Brush roller</text>
+      <circle cx="17" cy="281" r="5" fill="#3a0d0d" stroke="#f85149" stroke-width="1"/>
+      <text x="27"  y="285" fill="#f85149" font-size="8" font-family="Arial">IR edge sensor</text>
+      <circle cx="17" cy="297" r="5" fill="#21262d" stroke="#f2cc60" stroke-width="1"/>
+      <text x="27"  y="301" fill="#f2cc60" font-size="8" font-family="Arial">Idler sprocket (SP)</text>
+      <rect x="12"  y="308" width="10" height="6" fill="#1a2a40" stroke="#58a6ff" stroke-width="1"/>
+      <text x="27"  y="315" fill="#58a6ff" font-size="8" font-family="Arial">GF555 motor</text>
+      <rect x="12"  y="322" width="10" height="6" fill="#f2cc60" stroke="#f2cc60" stroke-width="1"/>
+      <text x="27"  y="329" fill="#f2cc60" font-size="8" font-family="Arial">Shaft coupling</text>
+    </svg>
+    </div>
+
+    <div class="g3" style="margin-top:14px;">
+      <div class="card">
+        <div class="card-t" style="color:#58a6ff;">🚗 How it moves</div>
+        <p style="color:#8b949e;font-size:11px;"><strong style="color:#e6edf3;">Two GF555 motors</strong> — one per side. Left motor drives the left track, right motor drives the right track independently. By running them at different speeds or opposite directions the robot steers and spins in place — called <strong style="color:#e6edf3;">differential drive</strong>, exactly like a tank.</p>
+      </div>
+      <div class="card">
+        <div class="card-t" style="color:#39c5cf;">🧹 How it cleans</div>
+        <p style="color:#8b949e;font-size:11px;">Two <strong style="color:#e6edf3;">brush rollers</strong> (front and rear, each 650mm wide) spin and scrub the panel. A <strong style="color:#e6edf3;">water jet pipe</strong> sprays water ahead of the front brush. Together they wet-scrub the whole panel surface.</p>
+      </div>
+      <div class="card">
+        <div class="card-t" style="color:#f85149;">🔄 How it knows where it is</div>
+        <p style="color:#8b949e;font-size:11px;"><strong style="color:#e6edf3;">IR sensors</strong> at each corner look down. When a sensor sees no surface (panel edge), the robot knows to turn. It sweeps in an S-pattern row by row until the full panel is clean.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ PHASE 1a — LASER CUT PARTS ═══════════ -->
+<div class="phase" id="p1a">
+  <div class="phase-hdr">
+    <div class="phase-num">1A</div>
+    <div>
+      <div class="phase-title">LASER CUT PARTS LIST <span class="badge b-laser">LASER CUT</span></div>
+      <div class="phase-sub">Send these files to a laser cutting service or cut yourself — all flat sheet parts</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <div class="info">ℹ If you don't have a laser cutter, services like SendCutSend, Xometry, or local fab labs will cut these from a DXF file. Get the DXF from your SolidWorks model for each part below. All structural parts are mild steel — cheaper, stronger, easier to weld, widely available.</div>
+
+    <div class="danger">⚠ <strong>Rust protection is mandatory.</strong> Mild steel corrodes outdoors on a solar panel. After cutting and drilling ALL steel parts: sand edges smooth → apply zinc primer spray → top-coat with outdoor enamel paint. Do this before assembly. Alternatively, buy <strong>galvanised (zinc-coated) mild steel sheet</strong> — same price, pre-protected.</div>
+
+    <div class="section-label">Side Plates, End Plates &amp; Frame — 3mm Mild Steel Sheet</div>
+    <table>
+      <tr><th>Part Name</th><th>Size (mm)</th><th>Qty</th><th>Material</th><th>Notes</th></tr>
+      <tr>
+        <td class="c1">Left Side Plate</td>
+        <td>820 × 150 × 3mm</td><td>1</td><td>Mild steel 3mm sheet</td>
+        <td>Main left wall of chassis. Has holes for bearing mounts and motor shaft. Use galvanised sheet or paint after cutting.</td>
+      </tr>
+      <tr>
+        <td class="c1">Right Side Plate</td>
+        <td>820 × 150 × 3mm</td><td>1</td><td>Mild steel 3mm sheet</td>
+        <td>Mirror image of left plate. Same hole pattern. Can weld cross braces directly to steel — stronger than bolted connections.</td>
+      </tr>
+      <tr>
+        <td class="c1">Front End Plate</td>
+        <td>650 × 150 × 3mm</td><td>1</td><td>Mild steel 3mm sheet</td>
+        <td>Closes the front of chassis. Has 2 holes for ultrasonic sensors. Weld or bolt to side plates.</td>
+      </tr>
+      <tr>
+        <td class="c1">Rear End Plate</td>
+        <td>650 × 150 × 3mm</td><td>1</td><td>Mild steel 3mm sheet</td>
+        <td>Closes the rear. Has 1 hole for dock IR sensor.</td>
+      </tr>
+      <tr>
+        <td class="c1">Cross Brace</td>
+        <td>650 × 40 × 3mm</td><td>3</td><td>Mild steel 3mm sheet</td>
+        <td>Connect left and right side plates for rigidity. Can be welded (strongest) or bolted M4×12mm.</td>
+      </tr>
+      <tr>
+        <td class="c1">Top Cover Plate</td>
+        <td>820 × 650 × 2mm</td><td>1</td><td>Mild steel 2mm sheet</td>
+        <td>Top lid. Has cutouts for battery access, water tank fill port. Not load-bearing. Paint both sides.</td>
+      </tr>
+      <tr>
+        <td class="c1">Electronics Tray</td>
+        <td>600 × 200 × 2mm</td><td>1</td><td>Mild steel 2mm sheet</td>
+        <td>Mounts inside chassis on nylon standoffs. Arduino Mega, 2× BTS7960, L298N, buck converters, ESP8266. Paint top surface to prevent short circuits.</td>
+      </tr>
+      <tr>
+        <td class="c1">Motor Mount Plate</td>
+        <td>140 × 140 × 3mm</td><td><strong>2</strong></td><td>Mild steel 3mm sheet</td>
+        <td>One per GF555 motor (LEFT + RIGHT). Each has 4× M4 holes matching GF555 face bolt pattern. Can weld to side plate for maximum rigidity.</td>
+      </tr>
+      <tr>
+        <td class="c1">Brush Assembly Side Bracket</td>
+        <td>200 × 120 × 3mm</td><td>4</td><td>Mild steel 3mm sheet</td>
+        <td>2 per brush assembly (front + rear). Hold the brush roller shaft bearings. Paint before assembly.</td>
+      </tr>
+      <tr>
+        <td class="c1">Splash Guard (gard)</td>
+        <td>615 × 120 × 2mm</td><td>2</td><td>Mild steel 2mm sheet</td>
+        <td>One per brush assembly. Curves over brush roller to contain water. Bend on a sheet metal brake or tap with mallet over a rounded edge. Paint both sides — water contact part.</td>
+      </tr>
+      <tr>
+        <td class="c1">Battery Tray</td>
+        <td>300 × 180 × 2mm</td><td>1</td><td>Mild steel 2mm sheet</td>
+        <td>Cradle for battery pack inside chassis. Drill drain holes in corners. Paint.</td>
+      </tr>
+      <tr>
+        <td class="c1">Sensor Corner Bracket</td>
+        <td>60 × 60 × 2mm (L-shape)</td><td>4</td><td>Mild steel 2mm sheet</td>
+        <td>One per corner for IR edge sensors. L-shaped — fold at 90° after laser cutting using a vice and mallet.</td>
+      </tr>
+      <tr>
+        <td class="c1">Water Tank Bracket</td>
+        <td>200 × 40 × 2mm</td><td>2</td><td>Mild steel 2mm sheet</td>
+        <td>Clamps that hold the 350mL water tank to chassis top. Paint to prevent rust from water contact.</td>
+      </tr>
+    </table>
+
+    <div class="tip">✓ <strong>Welding option:</strong> If you have access to a MIG or stick welder, weld the side plates, end plates, and cross braces together instead of bolting — this is stronger and removes the need for cross-brace bolt holes. Weld, then grind smooth, then prime and paint the whole chassis as a single unit.</div>
+    <div class="tip">✓ <strong>Tip for beginners:</strong> When you send DXFs for laser cutting, ask for "deburr and clean edges" — steel edges are razor-sharp after laser cutting. Also request <strong>galvanised mild steel</strong> if available — same cost, no painting needed for rust protection.</div>
+
+  </div>
+</div>
+
+<!-- ═══════════ PHASE 1b — MILD STEEL STOCK ═══════════ -->
+<div class="phase" id="p1b">
+  <div class="phase-hdr">
+    <div class="phase-num">1B</div>
+    <div>
+      <div class="phase-title">MILD STEEL STOCK — CUT TO SIZE (NO ALUMINIUM) <span class="badge b-cut">CUT/GRIND</span> <span class="badge b-drill">DRILL</span></div>
+      <div class="phase-sub">Buy these as standard stock lengths and cut down with hacksaw or angle grinder — all mild steel, no aluminium</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <div class="info">ℹ All bar, rod, tube and flat bar is mild steel. Mild steel is much cheaper than aluminium, available at any hardware or steel supplier, and easy to cut with a hacksaw or angle grinder. Paint all pieces with zinc primer after cutting to prevent rust.</div>
+
+    <table>
+      <tr><th>Part / Use</th><th>Stock Type</th><th>Size to Buy</th><th>Cut To</th><th>Qty Needed</th><th>How to Cut</th></tr>
+      <tr>
+        <td class="c1">Main drive shafts (one per motor side)</td>
+        <td>Mild steel round bar</td>
+        <td>Ø10mm × 1000mm length</td>
+        <td>Ø10 × 700mm each</td>
+        <td>2 pieces (LEFT + RIGHT)</td>
+        <td>Angle grinder + cut-off disc. File ends flat after cutting.</td>
+      </tr>
+      <tr>
+        <td class="c1">Sprocket shafts (shaft_sheni × 27 per side = 54 total)</td>
+        <td>Mild steel round bar</td>
+        <td>Ø10mm × 3200mm lengths (buy 2 lengths = 6.4m total)</td>
+        <td>Ø10 × 49mm each</td>
+        <td>54 pieces — model confirms 27 per side × 2 sides = 54 shafts total. Buy 6.5m of 10mm rod.</td>
+        <td>Mark with marker every 49mm. Cut with hacksaw. File both ends flat — must be flush so E-clips seat properly.</td>
+      </tr>
+      <tr>
+        <td class="c1">Idler shafts (shaft_harzgard × 6)</td>
+        <td>Mild steel round bar</td>
+        <td>Ø10mm × 500mm length</td>
+        <td>Ø10 × 75mm each</td>
+        <td>6 pieces</td>
+        <td>Hacksaw. File ends flat.</td>
+      </tr>
+      <tr>
+        <td class="c1">Brush roller shaft (front brush)</td>
+        <td>Mild steel round bar</td>
+        <td>Ø20mm × 700mm length</td>
+        <td>Ø20 × 670mm</td>
+        <td>1 piece</td>
+        <td>Hacksaw or angle grinder. Sand ends smooth with 80-grit paper. Must be straight — roll on flat surface to check. Paint shaft to prevent rust under the brush sleeve.</td>
+      </tr>
+      <tr>
+        <td class="c1">Brush roller shaft (rear brush)</td>
+        <td>Mild steel round bar</td>
+        <td>Ø20mm × 700mm length</td>
+        <td>Ø20 × 670mm</td>
+        <td>1 piece</td>
+        <td>Same as front brush shaft. Paint before fitting microfiber sleeve.</td>
+      </tr>
+      <tr>
+        <td class="c1">Water jet pipe (water-jet × 2)</td>
+        <td>Mild steel round tube (or 304 stainless tube)</td>
+        <td>Ø22mm OD × 1.5mm wall × 600mm</td>
+        <td>Ø22 × 500mm each</td>
+        <td>2 pieces (1 per brush assembly)</td>
+        <td>Hacksaw. Drill 1.5mm holes every 50mm along bottom for spray. Paint outside only — inside carries water so leave bare or use food-safe paint. (304 stainless tube is better here if budget allows — no rust inside.)</td>
+      </tr>
+      <tr>
+        <td class="c1">Handle brackets (dasteh × 2)</td>
+        <td>Mild steel flat bar</td>
+        <td>20 × 5mm × 200mm</td>
+        <td>20 × 5 × 91mm</td>
+        <td>2 pieces</td>
+        <td>Hacksaw. Drill 2× M4 holes at each end. Paint.</td>
+      </tr>
+      <tr>
+        <td class="c1">Loleh tensioner bar</td>
+        <td>Mild steel flat bar</td>
+        <td>20 × 5mm × 500mm</td>
+        <td>20 × 5 × 445mm</td>
+        <td>1 piece</td>
+        <td>Hacksaw. Drill slot holes for tension adjustment (drill 2 holes end-to-end, file out the web between them). Paint.</td>
+      </tr>
+      <tr>
+        <td class="c1">rabet connector bar</td>
+        <td>Mild steel flat bar</td>
+        <td>30 × 5mm × 500mm</td>
+        <td>30 × 5 × 450mm</td>
+        <td>1 piece</td>
+        <td>Hacksaw. Drill 4× M4 holes — 2 at each end. Paint.</td>
+      </tr>
+      <tr>
+        <td class="c1">gholab sub-frame</td>
+        <td>Mild steel angle bar 25×25×3mm</td>
+        <td>200mm length</td>
+        <td>51mm pieces</td>
+        <td>2 pieces</td>
+        <td>Hacksaw. File edges flat. Paint.</td>
+      </tr>
+    </table>
+
+    <div class="tip">✓ <strong>One purchase:</strong> Buy 10mm round bar in a single 3000mm length — this gives you all the sprocket shafts (54 pieces × 49mm + 6 idler shafts × 75mm = 2646mm + 450mm = 3096mm). Buy a 3.2m length to have spare.</div>
+    <div class="warn">⚠ When cutting steel with an angle grinder, always wear: safety glasses, gloves, and do NOT wear loose clothing. Sparks can travel 2–3 meters. Never use an angle grinder without the guard fitted.</div>
+    <div class="tip">✓ Buy 10mm mild steel rod in two 3250mm lengths (6.5m total) — this gives you all 54 sprocket shafts + 6 idler shafts from one purchase.</div>
+
+  </div>
+</div>
+
+<!-- ═══════════ PHASE 1c — 3D PRINTED PARTS ═══════════ -->
+<div class="phase" id="p1c">
+  <div class="phase-hdr">
+    <div class="phase-num">1C</div>
+    <div>
+      <div class="phase-title">3D PRINTED PARTS <span class="badge b-3dp">3D PRINT</span></div>
+      <div class="phase-sub">Print in PETG or ABS — not PLA (PLA warps in outdoor heat)</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <div class="info">ℹ Use <strong>PETG filament</strong> for all outdoor parts — it handles heat up to 80°C and is UV resistant. PLA will warp/deform in direct sunlight on a solar panel.</div>
+
+    <table>
+      <tr><th>Part Name</th><th>Model Ref</th><th>Qty</th><th>Print Settings</th><th>Function</th></tr>
+      <tr>
+        <td class="c2">Motor Mount Adapter</td>
+        <td>copling</td>
+        <td>2</td>
+        <td>40% infill, 3 walls, PETG</td>
+        <td>Connects GF555 motor shaft to drive shaft. Size: 41×30×30mm. Has set-screw hole.</td>
+      </tr>
+      <tr>
+        <td class="c2">3-Way Bracket</td>
+        <td>3rahi</td>
+        <td>1</td>
+        <td>50% infill, 4 walls, PETG</td>
+        <td>Junction bracket connecting 3 frame members. Size: 24×37×60mm.</td>
+      </tr>
+      <tr>
+        <td class="c2">Brush Connector Left</td>
+        <td>connector</td>
+        <td>2</td>
+        <td>40% infill, 3 walls, PETG</td>
+        <td>Locks the brush assembly to the chassis. Size: 47×40×30mm.</td>
+      </tr>
+      <tr>
+        <td class="c2">Brush Connector Right</td>
+        <td>connector2</td>
+        <td>2</td>
+        <td>40% infill, 3 walls, PETG</td>
+        <td>Mirror of connector. Size: 47×40×30mm.</td>
+      </tr>
+      <tr>
+        <td class="c2">Hinge Pin Housing</td>
+        <td>pin</td>
+        <td>4</td>
+        <td>60% infill, 4 walls, PETG</td>
+        <td>Holds the hinge pin for brush assembly articulation. Size: 21×4×19mm. Tiny — print 4 at once.</td>
+      </tr>
+      <tr>
+        <td class="c2">DC Motor Bracket</td>
+        <td>DC-motor-bracket</td>
+        <td>2</td>
+        <td>40% infill, 4 walls, PETG</td>
+        <td>Holds 6331K61 DC motor on each brush assembly. Size: 61×36×35mm.</td>
+      </tr>
+      <tr>
+        <td class="c2">IR Sensor Mount</td>
+        <td>(new, not in model)</td>
+        <td>4</td>
+        <td>30% infill, 2 walls, PETG</td>
+        <td>Small L-bracket to hold TCRT5000 IR sensor pointing down at corner. Design: 40×40×20mm L-shape with 2 M3 holes.</td>
+      </tr>
+      <tr>
+        <td class="c2">Ultrasonic Sensor Mount</td>
+        <td>(new, not in model)</td>
+        <td>2</td>
+        <td>30% infill, 2 walls, PETG</td>
+        <td>Holds HC-SR04 on front plate pointing forward. 50×40×20mm with two 16mm circular cutouts for sensor faces.</td>
+      </tr>
+      <tr>
+        <td class="c2">Water Tank Mount</td>
+        <td>(new, not in model)</td>
+        <td>1</td>
+        <td>40% infill, 3 walls, PETG</td>
+        <td>Cradle for 350mL water tank on top of chassis. 200×100×40mm box with open top and strap slots.</td>
+      </tr>
+      <tr>
+        <td class="c2">gholab frame piece</td>
+        <td>gholab</td>
+        <td>2</td>
+        <td>50% infill, 4 walls, PETG</td>
+        <td>Internal frame connector. Size: 51×7×48mm.</td>
+      </tr>
+      <tr>
+        <td class="c2">T-part fluid splitter</td>
+        <td>T-part-assemble</td>
+        <td>4</td>
+        <td>60% infill, 4 walls, PETG</td>
+        <td>2 per brush assembly × 2 assemblies = 4 total. Each T-part splits water to the left and right halves of the brush roller nozzles. Size: ~580×42×23mm each — print in 3 sections (~193mm each) and join with silicone sealant.</td>
+      </tr>
+      <tr>
+        <td class="c2">Dock station IR holder</td>
+        <td>(new)</td>
+        <td>1</td>
+        <td>30% infill, 2 walls, PETG</td>
+        <td>Small box mounted at dock to hold the IR LED that the robot detects.</td>
+      </tr>
+    </table>
+
+    <div class="warn">⚠ The T-part at 580mm is longer than most printer beds (250mm). Split it into 3 pieces and join with M3 bolts + silicone sealant for water tightness.</div>
+
+  </div>
+</div>
+
+<!-- ═══════════ PHASE 1d — BOLTS & HARDWARE ═══════════ -->
+<div class="phase" id="p1d">
+  <div class="phase-hdr">
+    <div class="phase-num">1D</div>
+    <div>
+      <div class="phase-title">BOLTS, NUTS, BEARINGS — COMPLETE LIST WITH EXACT SIZES <span class="badge b-buy">BUY</span></div>
+      <div class="phase-sub">Every single bolt and bearing you need — buy all before starting assembly</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <div class="section-label">Bearings</div>
+    <table>
+      <tr><th>Bearing Type</th><th>Size (ID × OD × Width)</th><th>Qty</th><th>Used For</th><th>Standard Code</th></tr>
+      <tr>
+        <td class="c1">Radial ball bearing (large)</td>
+        <td>Ø8 × 44 × 5mm (approx)</td><td>2</td>
+        <td>Main drive shaft — one on each side plate</td>
+        <td>Model ref: radial ball bearing_68_am</td>
+      </tr>
+      <tr>
+        <td class="c1">Radial ball bearing (small)</td>
+        <td>Ø6 × 37 × 4mm (approx)</td><td>2</td>
+        <td>Secondary shaft bearing</td>
+        <td>Model ref: radial ball bearing_68_am (1)</td>
+      </tr>
+      <tr>
+        <td class="c1">Instrument ball bearing (idler)</td>
+        <td>Ø4 × 16 × 4mm (approx)</td><td>6</td>
+        <td>Idler shaft_harzgard × 6 — one bearing each</td>
+        <td>Model ref: instrument ball bearing_ai</td>
+      </tr>
+      <tr>
+        <td class="c1">Brush assembly bearing</td>
+        <td>Ø5 × 30 × 7mm (approx)</td><td>4</td>
+        <td>Brush roller shaft — 2 per brush assembly × 2 assemblies</td>
+        <td>Model ref: 5972K244 Ball Bearing</td>
+      </tr>
+    </table>
+    <div class="info">ℹ Take the model dimensions to a bearing supplier (any engineering shop). The exact bearing code (6800, 608, etc.) depends on the bore diameter — measure your shaft and ask the shop to match it.</div>
+
+    <div class="section-label">Bolts — Stainless Steel (won't rust on solar panel)</div>
+    <table>
+      <tr><th>Bolt Type</th><th>Size</th><th>Length</th><th>Qty</th><th>Used For</th></tr>
+      <tr><td class="c2">Socket Head Cap Screw (M3)</td><td>M3</td><td>10mm</td><td>20</td><td>Sensor mounts, small brackets, 3D printed parts</td></tr>
+      <tr><td class="c2">Socket Head Cap Screw (M3)</td><td>M3</td><td>16mm</td><td>20</td><td>Electronics tray, DC motor bracket</td></tr>
+      <tr><td class="c2">Socket Head Cap Screw (M4)</td><td>M4</td><td>12mm</td><td>20</td><td>Side plates to cross braces, motor mount plate</td></tr>
+      <tr><td class="c2">Socket Head Cap Screw (M4)</td><td>M4</td><td>20mm</td><td>20</td><td>GF555 motor to motor mount plate</td></tr>
+      <tr><td class="c2">Socket Head Cap Screw (M4)</td><td>M4</td><td>30mm</td><td>10</td><td>Brush assembly side brackets to chassis</td></tr>
+      <tr><td class="c2">Socket Head Cap Screw (M5)</td><td>M5</td><td>16mm</td><td>10</td><td>Main frame assembly — heavy load joints</td></tr>
+      <tr><td class="c2">Socket Set Screw (M3 grub)</td><td>M3</td><td>6mm</td><td>25</td><td>Lock sprockets and pulleys on shafts — one per sprocket</td></tr>
+      <tr><td class="c2">Tapping Screw (M3 self-tap)</td><td>M3</td><td>12mm</td><td>10</td><td>Into 3D printed plastic parts where threading is hard</td></tr>
+      <tr><td class="c2">Hex Head Tapping Screw</td><td>M4</td><td>20mm</td><td>6</td><td>Model ref: hex head tapping screw_am — brush assembly</td></tr>
+    </table>
+
+    <div class="section-label">Nuts & Washers</div>
+    <table>
+      <tr><th>Type</th><th>Size</th><th>Qty</th><th>Used For</th></tr>
+      <tr><td class="c3">Hex Nut</td><td>M3</td><td>30</td><td>Matching all M3 bolts</td></tr>
+      <tr><td class="c3">Hex Nut</td><td>M4</td><td>30</td><td>Matching all M4 bolts</td></tr>
+      <tr><td class="c3">Hex Nut</td><td>M5</td><td>10</td><td>Matching M5 bolts</td></tr>
+      <tr><td class="c3">Nyloc Nut (locking)</td><td>M4</td><td>20</td><td>Anywhere that vibrates — track area, motor mount</td></tr>
+      <tr><td class="c3">Prevailing Torque Flange Nut</td><td>M4</td><td>4</td><td>Model ref: prevailing torque hex flange nut_am — brush assembly</td></tr>
+      <tr><td class="c3">Flat Washer (DIN 125)</td><td>M3</td><td>30</td><td>Under bolt heads — spreads load on steel and 3D printed parts</td></tr>
+      <tr><td class="c3">Flat Washer (DIN 125)</td><td>M4</td><td>30</td><td>Under bolt heads on all steel joints</td></tr>
+      <tr><td class="c3">Spring Washer</td><td>M4</td><td>20</td><td>Under nuts on vibrating joints</td></tr>
+    </table>
+
+    <div class="section-label">Shaft Hardware</div>
+    <table>
+      <tr><th>Item</th><th>Size</th><th>Qty</th><th>Used For</th></tr>
+      <tr><td class="c4">Circlip (E-clip external)</td><td>Ø10mm shaft</td><td>20</td><td>Keep bearings and sprockets from sliding off shaft ends</td></tr>
+      <tr><td class="c4">Shaft collar</td><td>Ø10mm bore</td><td>6</td><td>Lock idler shafts at correct position in side plates</td></tr>
+      <tr><td class="c4">Woodruff key / flat key</td><td>3×3×10mm</td><td>2</td><td>Lock drive sprocket to main shaft (alternative to set screw only)</td></tr>
+    </table>
+
+    <div class="tip">✓ Buy 10% extra of all bolts and nuts. You will drop some, strip some, and lose some. It's much better than stopping mid-assembly for a missing M4 nut.</div>
+
+  </div>
+</div>
+
+<!-- ═══════════ PHASE 1e — READY-MADE BOUGHT PARTS ═══════════ -->
+<div class="phase" id="p1e">
+  <div class="phase-hdr">
+    <div class="phase-num">1E</div>
+    <div>
+      <div class="phase-title">READY-MADE PARTS — JUST BUY THESE <span class="badge b-buy">BUY</span></div>
+      <div class="phase-sub">Do not try to make these yourself — buy exact parts</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <table>
+      <tr><th>Part</th><th>Model Ref</th><th>Spec from Model</th><th>Qty</th><th>Where to Buy</th></tr>
+      <tr>
+        <td class="c1">GF555 Geared DC Motor</td>
+        <td>GF555.STEP</td>
+        <td>24V, 70×123×134mm body</td><td><strong>2</strong> (one per track side — LEFT + RIGHT)</td>
+        <td>AliExpress search: "GF555 DC motor 24V" or "555 geared motor 24V" — buy a matched pair if possible</td>
+      </tr>
+      <tr>
+        <td class="c1">ST-320 Rubber Track</td>
+        <td>ST-320.step</td>
+        <td>Complete track module, 49×25×42mm per link</td><td>1 set</td>
+        <td>AliExpress search: "ST-320 track" or "rubber track crawler 320"</td>
+      </tr>
+      <tr>
+        <td class="c1">Double-Strand Roller Chain Idler Sprocket</td>
+        <td>6260K9 (McMaster)</td>
+        <td>72×72×43mm</td><td><strong>6</strong> (3 per track side — front/center/rear tensioner)</td>
+        <td>McMaster-Carr #6260K9 or equivalent from AliExpress</td>
+      </tr>
+      <tr>
+        <td class="c1">Compact Round-Face DC Motor (brush)</td>
+        <td>6331K61 (McMaster)</td>
+        <td>30×37×83mm, 12V</td><td>2</td>
+        <td>McMaster-Carr #6331K61 or similar small DC motor 12V 30mm body</td>
+      </tr>
+      <tr>
+        <td class="c1">Timing Belt Pulley (large)</td>
+        <td>1277N725</td>
+        <td>57×57×23mm</td><td>2</td>
+        <td>McMaster-Carr #1277N725 or matching belt pulley from AliExpress</td>
+      </tr>
+      <tr>
+        <td class="c1">Timing Belt Pulley (small)</td>
+        <td>1277N723</td>
+        <td>54×54×23mm</td><td>2</td>
+        <td>McMaster-Carr #1277N723 or matching belt pulley from AliExpress</td>
+      </tr>
+      <tr>
+        <td class="c1">Set Screw Flexible Shaft Coupling</td>
+        <td>4147N173</td>
+        <td>25×25×38mm</td><td>2</td>
+        <td>McMaster-Carr #4147N173 — connects motor shaft to brush roller shaft</td>
+      </tr>
+      <tr>
+        <td class="c1">Timing Belt (Belt1-3)</td>
+        <td>Belt1-3</td>
+        <td>107mm span × 11mm wide</td><td>2</td>
+        <td>Match to your pulley pitch (HTD 3M or GT2). Buy 200mm belt and cut.</td>
+      </tr>
+      <tr>
+        <td class="c1">Barbed Tube Fitting</td>
+        <td>9675T18 (McMaster)</td>
+        <td>67×17×17mm</td><td>3</td>
+        <td>McMaster-Carr #9675T18 — water hose barb connectors</td>
+      </tr>
+      <tr>
+        <td class="c1">Worm-Drive Hose Clamp</td>
+        <td>5011T11 (McMaster)</td>
+        <td>28×30×17mm</td><td>3</td>
+        <td>McMaster-Carr #5011T11 — clamps water hoses to barbs</td>
+      </tr>
+      <tr>
+        <td class="c1">304 SS Threaded-Rod Loop Hanger</td>
+        <td>3273T51 (McMaster)</td>
+        <td>31×62×22mm</td><td>4</td>
+        <td>McMaster-Carr #3273T51 — holds brush motor in place</td>
+      </tr>
+      <tr>
+        <td class="c1">Brush / Microfiber roller material</td>
+        <td>brash</td>
+        <td>650mm long × 70mm diameter</td><td>2</td>
+        <td>Buy microfiber roller sleeves (paint roller replacement sleeves) — 250mm × 3 sections per roller</td>
+      </tr>
+      <tr>
+        <td class="c1">Silicone water hose</td>
+        <td>—</td>
+        <td>8mm OD, 6mm ID</td><td>2m total</td>
+        <td>Any hardware store or AliExpress</td>
+      </tr>
+      <tr>
+        <td class="c1">350mL PETG water tank</td>
+        <td>—</td>
+        <td>~120×80×40mm</td><td>1</td>
+        <td>3D print in PETG with 100% infill walls OR buy a small plastic bottle and adapt</td>
+      </tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ═══════════ PHASE 2 — CHASSIS ═══════════ -->
+<div class="phase" id="p2">
+  <div class="phase-hdr">
+    <div class="phase-num">2</div>
+    <div>
+      <div class="phase-title">BUILDING THE CHASSIS FRAME — STEP BY STEP</div>
+      <div class="phase-sub">Build the skeleton first. Everything else bolts to this.</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <!-- Chassis side view SVG -->
+    <div class="dia">
+    <svg width="100%" viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg">
+      <!-- Side plate outline -->
+      <rect x="20"  y="30"  width="680" height="120" rx="6" fill="none" stroke="#58a6ff" stroke-width="2"/>
+      <text x="360" y="20" fill="#58a6ff" font-size="11" text-anchor="middle" font-family="Arial">SIDE PLATE (715mm long × 150mm tall × 3mm mild steel)</text>
+
+      <!-- Cross braces -->
+      <rect x="60"  y="30" width="8" height="120" fill="#fb8f44" opacity="0.7"/>
+      <rect x="356" y="30" width="8" height="120" fill="#fb8f44" opacity="0.7"/>
+      <rect x="652" y="30" width="8" height="120" fill="#fb8f44" opacity="0.7"/>
+      <text x="360" y="185" fill="#fb8f44" font-size="9" text-anchor="middle" font-family="Arial">3× Cross Braces (650mm × 40mm mild steel) — bolted through side plates</text>
+
+      <!-- Motor mount -->
+      <rect x="290" y="50" width="140" height="80" rx="4" fill="#1a2a40" stroke="#58a6ff" stroke-width="1.5"/>
+      <text x="360" y="85" fill="#58a6ff" font-size="9" text-anchor="middle" font-family="Arial">Motor Mount</text>
+      <text x="360" y="97" fill="#58a6ff" font-size="9" text-anchor="middle" font-family="Arial">Plate (140×140mm)</text>
+
+      <!-- Bearing holes -->
+      <circle cx="60"  cy="90" r="10" fill="#161b22" stroke="#f2cc60" stroke-width="2"/>
+      <circle cx="660" cy="90" r="10" fill="#161b22" stroke="#f2cc60" stroke-width="2"/>
+      <text x="360" y="200" fill="#f2cc60" font-size="9" text-anchor="middle" font-family="Arial">Bearing holes: Ø44mm at both ends for main shaft bearings</text>
+
+      <!-- Sprocket shaft holes -->
+      <circle cx="100" cy="90" r="5" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+      <circle cx="150" cy="90" r="5" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+      <circle cx="200" cy="90" r="5" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+      <circle cx="250" cy="90" r="5" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+      <circle cx="470" cy="90" r="5" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+      <circle cx="520" cy="90" r="5" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+      <circle cx="570" cy="90" r="5" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+      <circle cx="620" cy="90" r="5" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+      <text x="175" y="115" fill="#3fb950" font-size="8" text-anchor="middle" font-family="Arial">Sprocket shaft holes Ø10mm</text>
+    </svg>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 2.1</div>
+      <div class="step-title">Prepare the Side Plates</div>
+      <p>Take both laser-cut mild steel side plates (820×150×3mm). Before drilling, do this:</p>
+      <ul>
+        <li>File all edges with a flat file — remove burrs from laser cutting</li>
+        <li>Mark center line along the length at 75mm height from bottom edge (half of 150mm)</li>
+        <li>This center line is where all shaft holes go</li>
+        <li>Mark hole positions: bearing holes at X=30mm and X=790mm from front</li>
+        <li>Mark sprocket shaft holes: spaced every ~45mm along the center line between the two bearing holes</li>
+        <li>Mark 3 cross-brace bolt holes: at X=60mm, X=410mm, X=760mm — at both 20mm from top AND 20mm from bottom (total 6 holes per plate)</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 2.2</div>
+      <div class="step-title">Drill All Holes in Side Plates <span class="badge b-drill">DRILL</span></div>
+      <ul>
+        <li>Use a center punch first to mark every hole — stops the drill from wandering</li>
+        <li><strong>Bearing holes:</strong> Start with Ø5mm pilot drill, then open up to final bearing OD size. Use step drill bit or hole saw.</li>
+        <li><strong>Sprocket shaft holes:</strong> Drill Ø10.5mm (slightly larger than 10mm shaft for easy fit)</li>
+        <li><strong>Cross-brace holes:</strong> Drill Ø4.5mm for M4 bolts</li>
+        <li><strong>Motor mount holes:</strong> Drill 4× Ø4.5mm in pattern matching GF555 motor face</li>
+        <li>After drilling, use a deburring tool or countersink bit to clean each hole opening</li>
+        <li>Do BOTH plates together — clamp them face-to-face and drill through both at once so holes are identical</li>
+      </ul>
+      <div class="tip">✓ Drill through both side plates clamped together — guarantees perfect alignment. Use a scrap wood board underneath to get clean exit holes.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 2.3</div>
+      <div class="step-title">Assemble the Frame Box</div>
+      <ul>
+        <li>Lay the left side plate flat on workbench</li>
+        <li>Stand the front end plate (650×150mm) perpendicular at the front end — clamp with C-clamps</li>
+        <li>Stand the rear end plate at the rear end — clamp</li>
+        <li>Insert the 3× cross braces between the side plates at their marked positions</li>
+        <li>Check all is square with a try square — adjust before bolting</li>
+        <li>Bolt cross braces to left plate: M4×12mm bolts + flat washer + nyloc nut — <strong>do not fully tighten yet</strong></li>
+        <li>Now attach right side plate — bolt through to cross braces</li>
+        <li>Check squareness again — measure diagonals (should be equal)</li>
+        <li>Once square, fully tighten all M4 bolts. Torque to hand-tight + ¼ turn</li>
+        <li>Bolt front and rear end plates using M4×20mm + nyloc nuts</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 2.4</div>
+      <div class="step-title">Install Bearings in Side Plates</div>
+      <ul>
+        <li>Clean bearing holes with a rag — no dust or chips inside</li>
+        <li>Apply thin layer of bearing retainer (Loctite 641) around the bearing OD</li>
+        <li>Press bearing into hole using a mallet and a block of wood — tap evenly around the race, never hit the inner ring</li>
+        <li>Check bearing sits flush with plate surface — should not stick out</li>
+        <li>Let Loctite cure for 10 minutes before loading</li>
+        <li>Repeat for all bearing positions (2 main + 6 idler shaft bearing holes)</li>
+      </ul>
+      <div class="warn">⚠ Never hammer directly on a bearing. Always use a block of wood or a socket the same OD as the bearing outer race. Hitting the bearing directly damages the balls inside.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 2.5</div>
+      <div class="step-title">Mount Electronics Tray Inside Chassis</div>
+      <ul>
+        <li>Take the laser-cut electronics tray (600×200×2mm mild steel — paint top surface before fitting PCBs)</li>
+        <li>Drill 4× M3 mounting holes in the tray corners</li>
+        <li>Insert M3×10mm bolts from outside the side plate through to the tray</li>
+        <li>Use M3 nyloc nuts inside — position tray 50mm up from bottom of chassis</li>
+        <li>Tray should sit level and horizontal inside the chassis</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ PHASE 3 — DRIVE SYSTEM ═══════════ -->
+<div class="phase" id="p3">
+  <div class="phase-hdr">
+    <div class="phase-num">3</div>
+    <div>
+      <div class="phase-title">DRIVE SYSTEM — 2× GF555 MOTORS + SPROCKETS + ST-320 TRACK (DIFFERENTIAL DRIVE)</div>
+      <div class="phase-sub">This is what makes the robot move on the solar panel</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <div class="info">ℹ <strong>Differential drive:</strong> This robot has TWO GF555 motors — one driving the left track, one driving the right track independently. Each motor has its own BTS7960 H-bridge. When both run forward at the same speed the robot goes straight. When one runs faster it turns toward the slower side. When they run opposite directions the robot spins in place.</div>
+
+    <div class="step">
+      <div class="step-num">STEP 3.1</div>
+      <div class="step-title">Mount GF555 LEFT Motor (drives left track)</div>
+      <ul>
+        <li>Bolt the left motor mount plate (140×140mm mild steel) to the inside of the LEFT side of the chassis using M4×12mm bolts — or weld it directly to the side plate for maximum strength</li>
+        <li>Position: centered at ~357mm from the front of the chassis (midpoint of the 715mm side plate)</li>
+        <li>Align GF555 motor face to the mount plate — 4 holes pattern</li>
+        <li>Bolt GF555 using M4×20mm bolts + flat washer + spring washer — apply Loctite 243 on threads</li>
+        <li>GF555 output shaft must point toward the left side plate bearing — shaft runs left-to-right through the bearing and out</li>
+        <li>Check alignment: shaft must be centered in the bearing. No side load. Tighten bolts while shaft is spinning freely.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 3.1b</div>
+      <div class="step-title">Mount GF555 RIGHT Motor (drives right track)</div>
+      <ul>
+        <li>Identical procedure to Step 3.1 — mirror image on the RIGHT side of the chassis</li>
+        <li>Both motors are at the same lengthwise position (midpoint ≈410mm) — they are side-by-side on opposite sides</li>
+        <li>The two motor shafts are on opposite sides — LEFT motor shaft exits left plate, RIGHT motor shaft exits right plate</li>
+        <li>Label motors with tape: "L" and "R" to avoid wiring confusion later</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 3.2</div>
+      <div class="step-title">Attach the Shaft Couplings (2× copling)</div>
+      <ul>
+        <li>Slide one 3D-printed coupling (copling, 41×30×30mm) onto each GF555 output shaft</li>
+        <li>Each coupling connects: GF555 shaft → drive sprocket shaft for that side</li>
+        <li>Tighten M3 set screws in each coupling using a hex key — apply Loctite 243 on set screw threads</li>
+        <li>Pull each coupling by hand — must not slip on the shaft at all</li>
+        <li>You should have 2 couplings total — one per GF555 motor</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 3.3</div>
+      <div class="step-title">Install the 17 Sprocket Shafts (shaft_sheni)</div>
+      <ul>
+        <li>Take each 75mm long Ø10mm steel rod (you cut 17 of these earlier)</li>
+        <li>Slide through the Ø10.5mm holes in the left side plate</li>
+        <li>Slip a bearing onto the shaft from the inside</li>
+        <li>Slide through the same hole position on the right side plate</li>
+        <li>Put an E-clip (circlip) in the groove at each shaft end — this stops the shaft sliding out</li>
+        <li>Check shaft spins freely in the bearing — no stiffness</li>
+        <li>Repeat for all 27 shafts per side (54 total)</li>
+      </ul>
+      <div class="info">ℹ The 54 sprocket shafts (27 per side) span the full 715mm length of each side plate — they are what the track rides on. Space them evenly ~25mm apart along the length.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 3.4</div>
+      <div class="step-title">Press Sprockets onto Shafts (sheni)</div>
+      <ul>
+        <li>Slide one sprocket onto each of the 27 shafts per side (54 total)</li>
+        <li>Position sprocket in the CENTER of the shaft (equal gap on both sides)</li>
+        <li>Tighten the M3 set screw in the sprocket hub against the shaft — use Loctite 243</li>
+        <li>Spin each sprocket by hand — should spin freely with the shaft, no wobble</li>
+        <li>The <strong>6 double-strand idler sprockets</strong> (6260K9, 72×72×43mm) — 3 per side — go at the tensioner positions front, center, and rear of each track. These are larger than the regular sprockets and keep track tension correct.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 3.5</div>
+      <div class="step-title">Install the ST-320 Rubber Track</div>
+      <ul>
+        <li>This is the rubber chain/track that wraps around all sprockets like a tank</li>
+        <li>Start at the DRIVE sprocket (connected to GF555 motor)</li>
+        <li>Loop the track around the front sprocket, then along the top row of sprockets, around the rear, and back along the bottom</li>
+        <li>Thread track carefully over all 27 sprockets per side — do not force it</li>
+        <li>Connect track ends: most ST-320 tracks have a master link — push the pin through and clip the E-clip</li>
+        <li>Check track tension: press the middle of the bottom span — should deflect about 5–8mm. Not too tight, not too loose.</li>
+      </ul>
+      <div class="tip">✓ Use the loleh (tensioner pulley, 445×20×75mm) to adjust tension — loosen the tensioner bolt, push the tensioner outward until correct tension, then re-tighten. The loleh_dakheli (inner guide, 715×149×20mm) keeps the track centered.</div>
+      <div class="warn">⚠ Track too tight = motor stalls and overheats. Track too loose = track jumps off sprockets. 5–8mm deflection at center is correct.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 3.6</div>
+      <div class="step-title">Test Both Drive Motors Before Continuing</div>
+      <ul>
+        <li>Connect LEFT GF555 motor temporarily to a 24V power supply — left track should move forward</li>
+        <li>Disconnect. Connect RIGHT GF555 motor to 24V — right track should move forward</li>
+        <li>Test both together at 24V — robot should drive straight without pulling to one side</li>
+        <li>Listen for: grinding (bad alignment), clicking (track too loose), squealing (bearing dry)</li>
+        <li>Test differential spin: apply 24V to LEFT forward + RIGHT reversed — robot should spin in place clockwise</li>
+        <li>All good → disconnect power and continue to Phase 4</li>
+        <li>If one track is faster: slightly reduce that motor's run time during the test to compare torque</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ PHASE 4 — BRUSH ASSEMBLY ═══════════ -->
+<div class="phase" id="p4">
+  <div class="phase-hdr">
+    <div class="phase-num">4</div>
+    <div>
+      <div class="phase-title">BRUSH + WASH ASSEMBLY (× 2 identical) <span class="badge b-buy">BUY</span> <span class="badge b-3dp">3D PRINT</span></div>
+      <div class="phase-sub">Build this assembly twice — one for front, one for rear of the robot</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <div class="info">ℹ This is the wash-assemble1 from your model. You have 2 identical assemblies. Build one, test it, then build the second identical to the first.</div>
+
+    <div class="step">
+      <div class="step-num">STEP 4.1</div>
+      <div class="step-title">Build the Brush Roller (brash — 650×70×70mm)</div>
+      <ul>
+        <li>Take the Ø20mm × 670mm mild steel round bar (brush roller shaft) — sand smooth, paint with primer before fitting</li>
+        <li>Slide bearing (5972K244, 30×30×7mm) onto each end of the shaft</li>
+        <li>Push each bearing into the brush assembly side bracket hole</li>
+        <li>Wrap microfiber roller sleeve over the mild steel shaft — the sleeve is the actual brush material that contacts the panel</li>
+        <li>Secure sleeve with stainless zip ties at both ends and middle (3 zip ties per roller)</li>
+        <li>Check roller spins freely in the side brackets</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 4.2</div>
+      <div class="step-title">Mount 6331K61 DC Motor for Brush Drive</div>
+      <ul>
+        <li>Print DC-motor-bracket (61×36×35mm) in PETG</li>
+        <li>Bolt the 6331K61 motor (30×37×83mm) into the printed bracket using M3×10mm screws</li>
+        <li>Mount the bracket onto the brush assembly side plate using 3273T51 loop hangers — M3×16mm bolts through loop hanger holes</li>
+        <li>Motor shaft must be parallel to the brush roller shaft — check with a ruler</li>
+        <li>Motor shaft end should be at the same height as the brush shaft end (both shafts coplanar)</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 4.3</div>
+      <div class="step-title">Install Timing Belt Pulleys + Belt</div>
+      <ul>
+        <li>Slide the small timing belt pulley (1277N723, 54mm dia) onto the motor shaft</li>
+        <li>Tighten set screw with M3 hex key — Loctite 243 on thread</li>
+        <li>Slide the large timing belt pulley (1277N725, 57mm dia) onto the brush roller shaft end</li>
+        <li>Tighten set screw</li>
+        <li>Loop the timing belt (Belt1-3, 107mm span) over both pulleys</li>
+        <li>Adjust motor bracket position by loosening loop hangers — move motor away from roller until belt is taut (should not slip when you press it)</li>
+        <li>Lock motor bracket position — tighten all loop hanger bolts</li>
+        <li>Use the 4147N173 flexible shaft coupling if the motor shaft and brush shaft are slightly misaligned (connects motor shaft extension to brush shaft)</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 4.4</div>
+      <div class="step-title">Install Water Jet Pipe (water-jet — 500mm)</div>
+      <ul>
+        <li>Take the 500mm mild steel tube (or 304 stainless tube if available) with 1.5mm spray holes drilled every 50mm along the bottom — stainless is better here since water flows inside</li>
+        <li>Attach barbed tube fittings (9675T18) at both ends of the tube using worm-drive hose clamps (5011T11)</li>
+        <li>Mount the water jet tube on the brush assembly frame — above and slightly in front of the brush roller</li>
+        <li>Use M3×10mm bolts through small drilled holes in the tube wall to fix it to the side brackets</li>
+        <li>Connect silicone hose from T-part-assemble to the barbed fitting</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 4.5</div>
+      <div class="step-title">Assemble T-Part Water Splitters (×4 total — 2 per brush assembly)</div>
+      <ul>
+        <li><strong>Each brush assembly (wash-assemble1) has 2× T-part-assemble</strong> — so you need 4 T-parts total for the whole robot</li>
+        <li>Each T-part-assemble = T-cleaner-body + head-of-T-cleaner joined together (580×42×23mm full length)</li>
+        <li>The two T-parts in each brush assembly split water to the left and right halves of the brush roller</li>
+        <li>Print each in 3 sections (each ~193mm long) in PETG at 100% wall thickness for water tightness</li>
+        <li>Join sections with M3×16mm bolts and silicone sealant on the joint faces — let sealant cure 24h before water testing</li>
+        <li>Mount both T-parts along the brush assembly top rail using M3 bolts through the T-part base</li>
+        <li>Water path: pump → main hose → FRONT brush T-parts (×2) → front water-jets; pump → branch hose → REAR brush T-parts (×2) → rear water-jets</li>
+      </ul>
+      <div class="info">ℹ Total water system: 1 pump → solenoid valve → splits to front + rear hoses → each goes to 2× T-parts on that brush assembly → 4 water-jet spray lines total across the robot width.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 4.6</div>
+      <div class="step-title">Mount Brush Assembly to Chassis</div>
+      <ul>
+        <li>Front brush assembly: slide into front slot of chassis, between the track on left and right</li>
+        <li>Use connector and connector2 (3D printed) to lock the assembly to the chassis sides</li>
+        <li>Bolt connectors with M4×30mm bolts through chassis side plate → connector → brush frame</li>
+        <li>Use hinge pin (21×4×19mm printed housing + M4 bolt as pin) to allow slight float — brush can tilt ±2° to follow panel surface</li>
+        <li>Attach splash guard (gard, 615×120mm mild steel 2mm, bent to shape) over the brush roller — curves downward on each side. Paint both faces before fitting.</li>
+        <li>Bolt splash guard with M3×10mm through the side brackets</li>
+        <li>Repeat for rear brush assembly</li>
+      </ul>
+      <div class="tip">✓ The slight float via hinge pins is important — solar panels are not perfectly flat. The brush needs to self-adjust to maintain contact across the full 650mm width.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ PHASE 5 — SENSOR MOUNTING ═══════════ -->
+<div class="phase" id="p5">
+  <div class="phase-hdr">
+    <div class="phase-num">5</div>
+    <div>
+      <div class="phase-title">SENSOR MOUNTING — EXACT POSITIONS</div>
+      <div class="phase-sub">All 10 sensors — where exactly to put them and how to fix them</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <table>
+      <tr><th>Sensor</th><th>Qty</th><th>Position on Robot</th><th>Mounting Method</th><th>Height from Panel Surface</th></tr>
+      <tr>
+        <td class="c1">TCRT5000 IR edge sensor</td><td>4</td>
+        <td>One at each of the 4 corners — <strong>pointing straight down</strong></td>
+        <td>3D-printed L-bracket, 2× M3 screws. Sensor face looks at panel surface.</td>
+        <td>8–12mm above panel surface when robot is on the panel</td>
+      </tr>
+      <tr>
+        <td class="c1">HC-SR04 Ultrasonic</td><td>2</td>
+        <td>Front face of robot — left half and right half of front plate</td>
+        <td>3D-printed ultrasonic mount, M3 screws through front plate</td>
+        <td>Parallel to panel surface, pointing forward horizontally</td>
+      </tr>
+      <tr>
+        <td class="c1">MPU-6050 IMU</td><td>1</td>
+        <td>Center of electronics tray — inside chassis</td>
+        <td>M2 nylon standoffs × 4 — must be perfectly flat/level</td>
+        <td>Inside chassis — not relevant</td>
+      </tr>
+      <tr>
+        <td class="c1">DS3231 RTC</td><td>1</td>
+        <td>Electronics tray — any open area</td>
+        <td>M2 nylon standoffs</td>
+        <td>Inside chassis</td>
+      </tr>
+      <tr>
+        <td class="c1">ESP8266 NodeMCU</td><td>1</td>
+        <td>Electronics tray — near chassis edge (antenna side facing outside)</td>
+        <td>M3 nylon standoffs × 4</td>
+        <td>Inside chassis — keep antenna end near a gap for WiFi signal</td>
+      </tr>
+      <tr>
+        <td class="c1">Dock IR receiver</td><td>1</td>
+        <td>Rear face of robot — center of rear plate</td>
+        <td>Drill 5mm hole in rear plate. Hot glue receiver into hole. Route wire inside.</td>
+        <td>Same height as dock IR LED on the charging station</td>
+      </tr>
+      <tr>
+        <td class="c1">Capacitive water level</td><td>1</td>
+        <td>Side wall of water tank</td>
+        <td>Stick-on adhesive backing of sensor. Route wire to electronics tray.</td>
+        <td>On tank wall — facing into tank</td>
+      </tr>
+    </table>
+
+    <div class="step">
+      <div class="step-num">IMPORTANT</div>
+      <div class="step-title">IR Sensor Corner Bracket — How to Make It</div>
+      <ul>
+        <li>Print the IR sensor L-bracket in PETG (40×40×20mm)</li>
+        <li>One face of the L attaches to the corner of the chassis (M3 bolt into chassis)</li>
+        <li>The other face of the L is horizontal — sensor mounts on it pointing DOWN</li>
+        <li>The sensor face should be 8–12mm above the panel when the robot sits on the panel</li>
+        <li>Angle the sensor slightly outward (10°) — this detects the edge 1–2cm before the track reaches it, giving the robot time to stop</li>
+        <li>After mounting, adjust the small potentiometer on the sensor with a screwdriver until LED on sensor goes ON over the panel and OFF over air/edge</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ PHASE 6 — FINAL ASSEMBLY ORDER ═══════════ -->
+<div class="phase" id="p6">
+  <div class="phase-hdr">
+    <div class="phase-num">6</div>
+    <div>
+      <div class="phase-title">FINAL ASSEMBLY — CORRECT ORDER TO PUT IT ALL TOGETHER</div>
+      <div class="phase-sub">Follow this order exactly — doing it wrong means disassembling later</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <table>
+      <tr><th>Order</th><th>What to do</th><th>Check before moving on</th></tr>
+      <tr><td class="c1">1</td><td>Build chassis frame box (Phase 2)</td><td>Frame is square. All bolts tight. Bearings pressed in flush.</td></tr>
+      <tr><td class="c1">2</td><td>Install all sprocket shafts + sprockets (Phase 3.3–3.4)</td><td>All shafts spin freely. No wobble. Sprockets locked with set screws.</td></tr>
+      <tr><td class="c1">3</td><td>Mount LEFT + RIGHT GF555 motors + couplings (Phase 3.1–3.2)</td><td>Both motors bolted solid. Both couplings tight on shafts. Both motor shafts run true in bearings.</td></tr>
+      <tr><td class="c1">4</td><td>Install ST-320 track (Phase 3.5)</td><td>Track on all sprockets. Correct tension (5–8mm deflection). Track centered.</td></tr>
+      <tr><td class="c1">5</td><td>Test both drive motors independently, then together (Phase 3.6)</td><td>Both tracks move smoothly. No noise. Differential spin test passes. No derailment.</td></tr>
+      <tr><td class="c1">6</td><td>Build both brush assemblies (Phase 4.1–4.5)</td><td>Both rollers spin freely. Belts not slipping. Water jet holes open.</td></tr>
+      <tr><td class="c1">7</td><td>Mount electronics tray + Arduino + drivers inside chassis</td><td>Tray level. All PCBs on standoffs. No PCB touching chassis metal.</td></tr>
+      <tr><td class="c1">8</td><td>Route all wiring (follow wiring diagram)</td><td>All wires tied. Power wires away from signal wires. No bare wires touching chassis.</td></tr>
+      <tr><td class="c1">9</td><td>Mount brush assemblies to chassis front and rear (Phase 4.6)</td><td>Both assemblies locked. Hinge pins inserted. Splash guards attached.</td></tr>
+      <tr><td class="c1">10</td><td>Mount water tank + pump + T-part + hoses</td><td>All hose connections tight (hose clamps). No leaks. Tank full hold without drip.</td></tr>
+      <tr><td class="c1">11</td><td>Mount all sensors (Phase 5)</td><td>IR sensors pointing down. Ultrasonic pointing forward. IMU flat and level.</td></tr>
+      <tr><td class="c1">12</td><td>Install top cover plate</td><td>All cables accessible through cutouts. Cover sits flush.</td></tr>
+      <tr><td class="c1">13</td><td>Mount IR sensor corner brackets on outside corners</td><td>Sensor 8–12mm above ground when robot sits flat. Potentiometer adjusted.</td></tr>
+      <tr><td class="c1">14</td><td>Final mechanical check (Phase 7)</td><td>See checklist below.</td></tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ═══════════ PHASE 7 — PRE-RUN CHECKLIST ═══════════ -->
+<div class="phase" id="p7">
+  <div class="phase-hdr">
+    <div class="phase-num">7</div>
+    <div>
+      <div class="phase-title">MECHANICAL CHECKLIST BEFORE FIRST RUN</div>
+      <div class="phase-sub">Go through every item — do not power on until all boxes are checked</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <div class="g2">
+      <div>
+        <h3 style="color:#3fb950;margin-bottom:8px;">Frame & Drive</h3>
+        <ul class="chk">
+          <li>All M4 frame bolts tightened (no hand-loose bolts)</li>
+          <li>Nyloc nuts used on all vibrating joints (track area)</li>
+          <li>Loctite applied to all set screws (motor coupling, sprockets)</li>
+          <li>All bearings pressed fully flush — none sticking out</li>
+          <li>All 54 sprocket shafts (27 per side) have E-clips on both ends</li>
+          <li>ST-320 track master link clip is fully seated</li>
+          <li>Track tension: 5–8mm deflection at center span</li>
+          <li>Track centered on sprockets — not riding to one side</li>
+          <li>BOTH motor couplings tight — pull by hand, should not slip</li>
+          <li>LEFT motor coupling and RIGHT motor coupling both checked separately</li>
+          <li>Rotate each drive shaft by hand — that track moves smoothly, no stiff spots</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:#39c5cf;margin-bottom:8px;">Brush & Water</h3>
+        <ul class="chk">
+          <li>Both brush rollers spin freely by hand</li>
+          <li>Timing belts are taut — does not skip teeth when pressed</li>
+          <li>Belt pulleys set-screwed and Loctited on shafts</li>
+          <li>Splash guards bolted on — no loose edges</li>
+          <li>All hose connections have clamps fully tightened</li>
+          <li>Fill tank with water — leave 5 min — no drips anywhere</li>
+          <li>Water jet spray holes all open (poke with pin if blocked)</li>
+          <li>T-part joints sealed with silicone — no leaks</li>
+          <li>Brush microfiber sleeves secured with zip ties</li>
+          <li>Hinge pins inserted — brush can float ±2° but not fall off</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:#f85149;margin-bottom:8px;">Sensors</h3>
+        <ul class="chk">
+          <li>All 4 IR sensors pointing straight down at corners</li>
+          <li>IR sensor height: 8–12mm above a flat surface when robot sits on it</li>
+          <li>Pot on each IR sensor adjusted — LED ON over surface, OFF over air</li>
+          <li>Both ultrasonic sensors pointing forward, horizontally</li>
+          <li>IMU mounted flat — verify with spirit level</li>
+          <li>All sensor wires tied — cannot catch on moving parts</li>
+          <li>Dock IR receiver positioned at rear center</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:#f2cc60;margin-bottom:8px;">General Safety</h3>
+        <ul class="chk">
+          <li>No loose wires near track or brush rollers</li>
+          <li>All cable ties trimmed — no sharp protruding ends</li>
+          <li>Electronics tray bolted — does not rattle when chassis shaken</li>
+          <li>Battery strapped with velcro — does not slide</li>
+          <li>Top cover sits flush — no pinched wires</li>
+          <li>Robot placed on flat surface — sits stable without rocking</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-top:16px;">
+      ✓ <strong>You are ready for electrical work</strong> once all items above are checked. Refer to <em>SolarCleanerBot_WiringDiagram.html</em> for all electrical connections and <em>AutonomousGuide.html</em> for firmware.
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     COMPONENT FILES DOWNLOAD SECTION
+     ═══════════════════════════════════════════════ -->
+<div class="phase" style="margin-top:18px;">
+  <div class="phase-hdr">
+    <div class="phase-num">⬇</div>
+    <div>
+      <div class="phase-title">Component Files — Cut, Print &amp; Reference</div>
+      <div class="phase-sub">All STEP files exported directly from Assem1.SLDASM · Open in any CAD slicer or send to laser cutter / 3D printer</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <div class="info">ℹ <strong>STEP format</strong> works in Fusion 360, SolidWorks, FreeCAD, PrusaSlicer, Bambu Studio, and any CNC/laser CAM software. For 3D printing, import the STEP into your slicer and export as G-code. For cutting, import into your CAM tool and set material to 3mm mild steel.</div>
+
+    <!-- 3D PRINT PARTS -->
+    <div class="step" style="margin-top:14px;">
+      <div class="step-num">CATEGORY 1</div>
+      <div class="step-title">🖨 3D Print Parts — PETG filament recommended (outdoor heat resistant)</div>
+      <table>
+        <tr>
+          <th>Part Name</th>
+          <th>Description</th>
+          <th>Qty</th>
+          <th>Download</th>
+        </tr>
+        <tr>
+          <td><strong>main_body</strong></td>
+          <td>Main chassis body — split into 2 separate print files:<br>• Part 1: 550×117×500mm<br>• Part 2: 650×206×390mm</td>
+          <td>1+1</td>
+          <td>
+            <a href="components/3d-print/main_body_part1.stl" style="color:#58a6ff;">main_body_part1.stl</a><br>
+            <a href="components/3d-print/main_body_part2.stl" style="color:#58a6ff;">main_body_part2.stl</a>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>gholab</strong></td>
+          <td>Cover / shell panel</td>
+          <td>1</td>
+          <td><a href="components/3d-print/gholab.step" style="color:#58a6ff;">gholab.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>rabet</strong></td>
+          <td>Rebate / locating bracket</td>
+          <td>1</td>
+          <td><a href="components/3d-print/rabet.step" style="color:#58a6ff;">rabet.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>copling</strong></td>
+          <td>Shaft coupling block (5 bodies) — connects GF555 shaft to drive sprocket</td>
+          <td>2</td>
+          <td><a href="components/3d-print/copling.step" style="color:#58a6ff;">copling.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>sheni</strong></td>
+          <td>Track link / sheni sprocket segment</td>
+          <td>54</td>
+          <td><a href="components/3d-print/sheni.step" style="color:#58a6ff;">sheni.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>shaft_sheni</strong></td>
+          <td>Sprocket shaft — Ø10mm × 49mm, cut from mild steel rod</td>
+          <td>54</td>
+          <td><a href="components/3d-print/shaft_sheni.step" style="color:#58a6ff;">shaft_sheni.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>loleh</strong></td>
+          <td>Pulley / roller outer</td>
+          <td>2</td>
+          <td><a href="components/3d-print/loleh.step" style="color:#58a6ff;">loleh.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>loleh_dakheli</strong></td>
+          <td>Pulley / roller inner</td>
+          <td>2</td>
+          <td><a href="components/3d-print/loleh_dakheli.step" style="color:#58a6ff;">loleh_dakheli.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>dasteh</strong></td>
+          <td>Handle / arm bracket</td>
+          <td>2</td>
+          <td><a href="components/3d-print/dasteh.step" style="color:#58a6ff;">dasteh.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>3rahi</strong></td>
+          <td>Three-way junction / T-body support</td>
+          <td>2</td>
+          <td><a href="components/3d-print/3rahi.step" style="color:#58a6ff;">3rahi.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>shaft_harzgard</strong></td>
+          <td>Idler shaft — goes through idler sprocket</td>
+          <td>6</td>
+          <td><a href="components/3d-print/shaft_harzgard.step" style="color:#58a6ff;">shaft_harzgard.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>gard</strong></td>
+          <td>Splash guard / side guard panel</td>
+          <td>2</td>
+          <td><a href="components/3d-print/gard.step" style="color:#58a6ff;">gard.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>head-of-T-cleaner</strong></td>
+          <td>T-cleaner nozzle head — water outlet end</td>
+          <td>4</td>
+          <td><a href="components/3d-print/head-of-T-cleaner.step" style="color:#58a6ff;">head-of-T-cleaner.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>T-cleaner-body</strong></td>
+          <td>T-cleaner main body — water distribution tube</td>
+          <td>4</td>
+          <td><a href="components/3d-print/T-cleaner-body.step" style="color:#58a6ff;">T-cleaner-body.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>pin</strong></td>
+          <td>Locking pin / retaining pin</td>
+          <td>8</td>
+          <td><a href="components/3d-print/pin.step" style="color:#58a6ff;">pin.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>connector</strong></td>
+          <td>Pipe connector — hose barb adapter</td>
+          <td>2</td>
+          <td><a href="components/3d-print/connector.step" style="color:#58a6ff;">connector.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>connector2</strong></td>
+          <td>Pipe connector variant 2</td>
+          <td>2</td>
+          <td><a href="components/3d-print/connector2.step" style="color:#58a6ff;">connector2.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>motor-DC-shaft</strong></td>
+          <td>Brush motor drive shaft extension</td>
+          <td>2</td>
+          <td><a href="components/3d-print/motor-DC-shaft.step" style="color:#58a6ff;">motor-DC-shaft.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>Belt1-3</strong></td>
+          <td>Timing belt (print flexible or buy GT2 belt)</td>
+          <td>2</td>
+          <td><a href="components/3d-print/Belt1-3.step" style="color:#58a6ff;">Belt1-3.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>DC-motor-bracket</strong></td>
+          <td>Brush motor mounting bracket</td>
+          <td>2</td>
+          <td><a href="components/3d-print/DC-motor-bracket.step" style="color:#58a6ff;">DC-motor-bracket.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>water-jet</strong></td>
+          <td>Water jet nozzle bar — runs along brush roller</td>
+          <td>2</td>
+          <td><a href="components/3d-print/water-jet.step" style="color:#58a6ff;">water-jet.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>brash</strong></td>
+          <td>Brush roller — main cleaning brush that sweeps the solar panel surface</td>
+          <td>2</td>
+          <td><a href="components/3d-print/brash.step" style="color:#58a6ff;">brash.step</a></td>
+        </tr>
+      </table>
+      <div class="tip">✓ Print all parts in <strong>PETG</strong> — minimum 3 walls, 30% infill. PLA will warp in outdoor heat on solar panels.</div>
+    </div>
+
+    <!-- CUT MILD STEEL -->
+    <div class="step" style="margin-top:14px;">
+      <div class="step-num">CATEGORY 2</div>
+      <div class="step-title">🔩 Cut Mild Steel Parts — send to laser cutter or waterjet</div>
+      <table>
+        <tr>
+          <th>Part Name</th>
+          <th>Description</th>
+          <th>Qty</th>
+          <th>Download</th>
+        </tr>
+        <tr>
+          <td><strong>structure</strong></td>
+          <td>Full chassis structure — 12 steel bars split into individual files, dimensions in filename (all 40×20mm cross-section mild steel):<br>
+            4× cross bars 1000mm long · 4× side rails 1866mm long · 4× additional frame members</td>
+          <td>12 pcs</td>
+          <td>
+            <a href="components/cut-mild-steel/structure_body1_40x1000x20mm.stl" style="color:#58a6ff;">body1 — 40×1000×20mm</a><br>
+            <a href="components/cut-mild-steel/structure_body2_40x1000x20mm.stl" style="color:#58a6ff;">body2 — 40×1000×20mm</a><br>
+            <a href="components/cut-mild-steel/structure_body3_40x1000x20mm.stl" style="color:#58a6ff;">body3 — 40×1000×20mm</a><br>
+            <a href="components/cut-mild-steel/structure_body4_40x1000x20mm.stl" style="color:#58a6ff;">body4 — 40×1000×20mm</a><br>
+            <a href="components/cut-mild-steel/structure_body5_40x1866x20mm.stl" style="color:#58a6ff;">body5 — 40×1866×20mm</a><br>
+            <a href="components/cut-mild-steel/structure_body6_40x1866x20mm.stl" style="color:#58a6ff;">body6 — 40×1866×20mm</a><br>
+            <a href="components/cut-mild-steel/structure_body7_40x1866x20mm.stl" style="color:#58a6ff;">body7 — 40×1866×20mm</a><br>
+            <a href="components/cut-mild-steel/structure_body8_40x1866x20mm.stl" style="color:#58a6ff;">body8 — 40×1866×20mm</a><br>
+            <a href="components/cut-mild-steel/structure_body9_40x1000x20mm.stl" style="color:#58a6ff;">body9 — 40×1000×20mm</a><br>
+            <a href="components/cut-mild-steel/structure_body10_40x1000x20mm.stl" style="color:#58a6ff;">body10 — 40×1000×20mm</a><br>
+            <a href="components/cut-mild-steel/structure_body11_40x1866x20mm.stl" style="color:#58a6ff;">body11 — 40×1866×20mm</a><br>
+            <a href="components/cut-mild-steel/structure_body12_40x1866x20mm.stl" style="color:#58a6ff;">body12 — 40×1866×20mm</a>
+          </td>
+        </tr>
+      </table>
+      <div class="warn">⚠ After cutting, deburr all edges with a file. Drill all holes at correct diameter before assembly. Apply zinc primer + enamel topcoat on all faces — mild steel will rust outdoors without paint.</div>
+    </div>
+
+    <!-- ASSEMBLIES -->
+    <div class="step" style="margin-top:14px;">
+      <div class="step-num">CATEGORY 3</div>
+      <div class="step-title">🔧 Sub-Assembly Reference Files — for checking fit before build</div>
+      <table>
+        <tr>
+          <th>Assembly Name</th>
+          <th>Description</th>
+          <th>Download</th>
+        </tr>
+        <tr>
+          <td><strong>1ofsheni</strong></td>
+          <td>Single track link assembly — shaft + sheni + bearing stack</td>
+          <td><a href="components/assemblies/1ofsheni.step" style="color:#58a6ff;">1ofsheni.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>T-part-assemble</strong></td>
+          <td>Full T-cleaner assembly — water jet + T-body + head + pins (4× total in robot)</td>
+          <td><a href="components/assemblies/T-part-assemble.step" style="color:#58a6ff;">T-part-assemble.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>wash-assemble1</strong></td>
+          <td>Full brush wash assembly — brush roller + gard + water-jet + motor + belt + T-parts (2× in robot)</td>
+          <td><a href="components/assemblies/wash-assemble1.step" style="color:#58a6ff;">wash-assemble1.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>ST-320</strong></td>
+          <td>Track assembly — full rubber track (ST-320 model)</td>
+          <td><a href="components/assemblies/ST-320.step" style="color:#58a6ff;">ST-320.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>robot5</strong></td>
+          <td>Full robot sub-assembly reference</td>
+          <td><a href="components/assemblies/robot5.step" style="color:#58a6ff;">robot5.step</a></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- BOUGHT PARTS -->
+    <div class="step" style="margin-top:14px;">
+      <div class="step-num">CATEGORY 4</div>
+      <div class="step-title">🛒 Bought / Off-the-Shelf Parts — reference STEP files for fit checking</div>
+      <table>
+        <tr>
+          <th>Part Name</th>
+          <th>Description</th>
+          <th>Download</th>
+        </tr>
+        <tr>
+          <td><strong>GF555</strong></td>
+          <td>GF555 geared DC motor — 2× required (one per track side)</td>
+          <td><a href="components/bought-parts/GF555.STEP.step" style="color:#58a6ff;">GF555.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>6260K9 Idler Sprocket</strong></td>
+          <td>Double-strand roller chain idler sprocket — 6× required</td>
+          <td><a href="components/bought-parts/6260K9_Double-Strand_Roller_Chain_Idler_Sprocket.step" style="color:#58a6ff;">6260K9_idler_sprocket.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>6331K61 Brush Motor</strong></td>
+          <td>Compact round-face DC motor for brush rollers — 2× required</td>
+          <td><a href="components/bought-parts/6331K61_Compact_Round-Face_DC_Motor.step" style="color:#58a6ff;">6331K61_brush_motor.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>5972K244 Ball Bearing</strong></td>
+          <td>Brush guard ball bearing — 2× per brush assembly</td>
+          <td><a href="components/bought-parts/5972K244_Ball_Bearing-brash-gard.step" style="color:#58a6ff;">5972K244_bearing.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>instrument ball bearing</strong></td>
+          <td>Instrument ball bearing for idler shafts</td>
+          <td><a href="components/bought-parts/instrument_ball_bearing_ai.step" style="color:#58a6ff;">instrument_ball_bearing.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>radial ball bearing 68</strong></td>
+          <td>Radial ball bearing for main shaft</td>
+          <td><a href="components/bought-parts/radial_ball_bearing_68_am.step" style="color:#58a6ff;">radial_ball_bearing_68.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>4147N173 Shaft Coupling</strong></td>
+          <td>Set screw precision flexible shaft coupling</td>
+          <td><a href="components/bought-parts/4147N173_Set_Screw_Precision_Flexible_Shaft_Couplings.step" style="color:#58a6ff;">4147N173_shaft_coupling.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>1277N723 Belt Pulley</strong></td>
+          <td>Corrosion-resistant timing belt pulley (driver)</td>
+          <td><a href="components/bought-parts/1277N723_Corrosion-Resistant_Timing_Belt_Pulley.step" style="color:#58a6ff;">1277N723_pulley.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>1277N725 Belt Pulley</strong></td>
+          <td>Corrosion-resistant timing belt pulley (driven)</td>
+          <td><a href="components/bought-parts/1277N725_Corrosion-Resistant_Timing_Belt_Pulley.step" style="color:#58a6ff;">1277N725_pulley.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>9675T18 Barbed Fitting</strong></td>
+          <td>Odor-resistant plastic barbed tube fitting — water inlet</td>
+          <td><a href="components/bought-parts/9675T18_Odor-Resistant_Plastic_Barbed_Tube_Fitting.step" style="color:#58a6ff;">9675T18_barbed_fitting.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>5011T11 Hose Clamp</strong></td>
+          <td>Worm-drive clamp for hose and tube</td>
+          <td><a href="components/bought-parts/5011T11_Worm-Drive_Clamp_for_Firm_Hose_and_Tube.step" style="color:#58a6ff;">5011T11_hose_clamp.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>3273T51 Loop Hanger</strong></td>
+          <td>304 stainless steel threaded-rod-mount loop hanger</td>
+          <td><a href="components/bought-parts/3273T51_304_Stainless_Steel_Threaded-Rod-Mount_Loop_Hanger.step" style="color:#58a6ff;">3273T51_loop_hanger.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>90967A220 Retaining Ring</strong></td>
+          <td>External retaining ring (E-clip) for sprocket shafts</td>
+          <td><a href="components/bought-parts/90967A220_External_Retaining_Ring.step.step" style="color:#58a6ff;">90967A220_retaining_ring.step</a></td>
+        </tr>
+        <tr>
+          <td><strong>Hardware (screws/nuts/washers)</strong></td>
+          <td>M3 pan head screws, spring washers, socket head cap screws, set screws, hex flange nuts, countersunk screws</td>
+          <td>
+            <a href="components/bought-parts/socket_head_cap_screw_am.step" style="color:#58a6ff;">socket_cap_screw.step</a> ·
+            <a href="components/bought-parts/socket_countersunk_head_screw_am.step" style="color:#58a6ff;">countersunk_screw.step</a> ·
+            <a href="components/bought-parts/socket_set_screw_cup_point_am.step" style="color:#58a6ff;">set_screw.step</a> ·
+            <a href="components/bought-parts/hex_head_tapping_screw_am.step" style="color:#58a6ff;">tapping_screw.step</a> ·
+            <a href="components/bought-parts/prevailing_torque_hex_flange_nut_am.step" style="color:#58a6ff;">hex_nut.step</a> ·
+            <a href="components/bought-parts/spring_lock_washer_2_din_DIN_6905-3.2-FSt.STEP.step" style="color:#58a6ff;">spring_washer.step</a>
+          </td>
+        </tr>
+      </table>
+      <div class="info">ℹ These are reference STEP files — you buy these parts, not print or cut them. Use the STEP files to verify fit in your CAD tool before ordering.</div>
+    </div>
+
+  </div>
+</div>
+
+<div style="text-align:center;padding:14px;color:#30363d;font-size:10px;border-top:1px solid #21262d;margin-top:10px;">
+  SolarCleanerBot · Mechanical Build Guide v3 · Panel: 2000×1000mm · 2× GF555 Differential Drive · Mild Steel + 3D Print (no aluminium) · Generated by Claude Code · 2026-05-15
+</div>
+</body>
+</html>

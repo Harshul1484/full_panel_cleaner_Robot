@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SolarCleanerBot — Full Autonomous Guide</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0d1117; color: #e6edf3; font-family: 'Consolas','Courier New',monospace; font-size: 12px; line-height: 1.7; }
+h1 { text-align:center; padding:20px; font-size:22px; color:#58a6ff; border-bottom:2px solid #30363d; letter-spacing:3px; }
+h2 { font-size:15px; color:#f2cc60; margin:18px 0 8px; letter-spacing:1px; }
+h3 { font-size:13px; color:#3fb950; margin:12px 0 6px; }
+h4 { font-size:12px; color:#79c0ff; margin:8px 0 4px; }
+.subtitle { text-align:center; color:#8b949e; font-size:11px; padding:5px; margin-bottom:6px; }
+
+.phase { margin:0 16px 18px; border:1px solid #30363d; border-radius:8px; overflow:hidden; }
+.phase-header { background:#161b22; padding:12px 16px; border-bottom:1px solid #30363d; display:flex; align-items:center; gap:12px; }
+.phase-num { background:#21262d; color:#58a6ff; border:1px solid #58a6ff; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px; flex-shrink:0; }
+.phase-title { color:#e6edf3; font-size:14px; font-weight:bold; }
+.phase-sub { color:#8b949e; font-size:10px; }
+.phase-body { padding:14px 16px; }
+
+.step { border-left:3px solid #30363d; padding:8px 12px; margin:10px 0; background:#0d1117; border-radius:0 4px 4px 0; }
+.step-num { color:#58a6ff; font-weight:bold; font-size:11px; margin-bottom:4px; }
+.step-title { color:#e6edf3; font-weight:bold; margin-bottom:6px; }
+.step ul { padding-left:18px; }
+.step ul li { padding:2px 0; color:#cdd9e5; }
+.step ul li::marker { color:#58a6ff; }
+
+.warn  { background:#2d1a00; border:1px solid #fb8f44; border-radius:4px; padding:8px 12px; margin:8px 0; color:#fb8f44; font-size:11px; }
+.danger{ background:#3a0d0d; border:1px solid #f85149; border-radius:4px; padding:8px 12px; margin:8px 0; color:#f85149; font-size:11px; }
+.tip   { background:#1a3520; border:1px solid #3fb950; border-radius:4px; padding:8px 12px; margin:8px 0; color:#3fb950; font-size:11px; }
+.info  { background:#1a2a40; border:1px solid #58a6ff; border-radius:4px; padding:8px 12px; margin:8px 0; color:#79c0ff; font-size:11px; }
+
+/* Tables */
+table { width:100%; border-collapse:collapse; margin:8px 0; }
+th { background:#21262d; color:#8b949e; padding:6px 8px; text-align:left; font-size:10px; letter-spacing:1px; border:1px solid #30363d; }
+td { padding:5px 8px; border:1px solid #21262d; font-size:11px; }
+tr:nth-child(even) { background:#161b22; }
+tr:hover { background:#1c2128; }
+.tc1 { color:#58a6ff; }
+.tc2 { color:#3fb950; }
+.tc3 { color:#f2cc60; }
+.tc4 { color:#fb8f44; }
+
+/* Code blocks */
+pre { background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px 14px; overflow-x:auto; margin:8px 0; font-size:11px; line-height:1.6; }
+.kw  { color:#ff7b72; }
+.fn  { color:#d2a8ff; }
+.cm  { color:#8b949e; font-style:italic; }
+.str { color:#a5d6ff; }
+.num { color:#79c0ff; }
+.pp  { color:#f2cc60; }
+
+/* SVG diagrams */
+.dia { background:#0d1117; border:1px solid #21262d; border-radius:6px; margin:10px 0; padding:8px; overflow-x:auto; }
+
+/* Checklist */
+.chk { list-style:none; padding:0; }
+.chk li { padding:3px 0; color:#cdd9e5; }
+.chk li::before { content:"☐ "; color:#58a6ff; }
+
+/* Grid */
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:8px 0; }
+.g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:8px 0; }
+.card { background:#161b22; border:1px solid #30363d; border-radius:6px; padding:10px 12px; }
+.card-title { font-weight:bold; margin-bottom:6px; font-size:11px; }
+
+.toc { margin:12px 16px; background:#161b22; border:1px solid #30363d; border-radius:6px; padding:14px 18px; }
+.toc a { color:#58a6ff; text-decoration:none; display:block; padding:2px 0; font-size:11px; }
+.toc a:hover { color:#79c0ff; }
+.toc-phase { color:#f2cc60; font-size:10px; letter-spacing:2px; margin-top:8px; margin-bottom:2px; }
+</style>
+</head>
+<body>
+
+<h1>SOLARCLEANERBOT — FULL AUTONOMOUS GUIDE</h1>
+<div class="subtitle">2× GF555 Differential Drive · 2× BTS7960 · Edge Detection · S-Pattern Sweep · Obstacle Avoidance · WiFi Status · RTC Scheduled Cleaning · Return-to-Dock</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div style="color:#e6edf3;font-weight:bold;margin-bottom:8px;font-size:13px;">TABLE OF CONTENTS</div>
+  <div class="toc-phase">PHASE 1 — UNDERSTANDING AUTONOMY</div>
+  <a href="#p1">How the autonomous system works</a>
+  <a href="#p1b">State machine overview</a>
+  <div class="toc-phase">PHASE 2 — ADDITIONAL COMPONENTS</div>
+  <a href="#p2">Extra sensors + modules needed</a>
+  <a href="#p2b">Full updated BOM</a>
+  <div class="toc-phase">PHASE 3 — HARDWARE ASSEMBLY</div>
+  <a href="#p3a">Sensor mounting positions</a>
+  <a href="#p3b">Wiring all new sensors</a>
+  <a href="#p3c">RTC + ESP8266 WiFi module wiring</a>
+  <div class="toc-phase">PHASE 4 — FIRMWARE</div>
+  <a href="#p4a">Full Arduino firmware (state machine)</a>
+  <a href="#p4b">PID speed control</a>
+  <a href="#p4c">WiFi status reporting (ESP8266)</a>
+  <a href="#p4d">RTC scheduled cleaning</a>
+  <div class="toc-phase">PHASE 5 — CALIBRATION</div>
+  <a href="#p5">Sensor calibration · Motor tuning · Path calibration</a>
+  <div class="toc-phase">PHASE 6 — TESTING</div>
+  <a href="#p6">Full test procedure step by step</a>
+  <div class="toc-phase">PHASE 7 — TROUBLESHOOTING</div>
+  <a href="#p7">Common problems and fixes</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PHASE 1 — HOW AUTONOMY WORKS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="phase" id="p1">
+  <div class="phase-header">
+    <div class="phase-num">1</div>
+    <div>
+      <div class="phase-title">HOW THE AUTONOMOUS SYSTEM WORKS</div>
+      <div class="phase-sub">Concepts before you build anything</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <h3>The Core Idea</h3>
+    <p style="color:#cdd9e5;margin-bottom:10px;">
+      The robot cleans a solar panel by driving in an S-pattern (boustrophedon sweep) — straight across, turn, straight back, turn, repeat — until the whole panel is covered. It uses sensors to detect panel edges so it knows when to turn, and obstacle sensors to stop if it hits something unexpected.
+    </p>
+
+    <!-- STATE MACHINE SVG -->
+    <h3 id="p1b">State Machine — What the Robot Does at Each Moment</h3>
+    <div class="dia">
+    <svg width="100%" viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg">
+      <!-- States -->
+      <!-- IDLE -->
+      <rect x="30"  y="180" width="100" height="50" rx="8" fill="#1a2a40" stroke="#58a6ff" stroke-width="1.5"/>
+      <text x="80"  y="200" fill="#58a6ff" font-size="10" text-anchor="middle" font-family="Consolas" font-weight="bold">IDLE</text>
+      <text x="80"  y="215" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">Waiting for</text>
+      <text x="80"  y="225" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">RTC trigger</text>
+
+      <!-- START -->
+      <rect x="170" y="180" width="100" height="50" rx="8" fill="#1a3520" stroke="#3fb950" stroke-width="1.5"/>
+      <text x="220" y="200" fill="#3fb950" font-size="10" text-anchor="middle" font-family="Consolas" font-weight="bold">START</text>
+      <text x="220" y="215" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">Start motors,</text>
+      <text x="220" y="225" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">begin sweep</text>
+
+      <!-- SWEEP -->
+      <rect x="310" y="180" width="100" height="50" rx="8" fill="#1a3520" stroke="#3fb950" stroke-width="2"/>
+      <text x="360" y="200" fill="#3fb950" font-size="10" text-anchor="middle" font-family="Consolas" font-weight="bold">SWEEP</text>
+      <text x="360" y="215" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">Drive straight,</text>
+      <text x="360" y="225" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">brush + water ON</text>
+
+      <!-- TURN -->
+      <rect x="450" y="180" width="100" height="50" rx="8" fill="#2a2a10" stroke="#f2cc60" stroke-width="1.5"/>
+      <text x="500" y="200" fill="#f2cc60" font-size="10" text-anchor="middle" font-family="Consolas" font-weight="bold">TURN</text>
+      <text x="500" y="215" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">Rotate, shift</text>
+      <text x="500" y="225" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">one row over</text>
+
+      <!-- OBSTACLE -->
+      <rect x="310" y="60"  width="100" height="50" rx="8" fill="#3a0d0d" stroke="#f85149" stroke-width="1.5"/>
+      <text x="360" y="80"  fill="#f85149" font-size="10" text-anchor="middle" font-family="Consolas" font-weight="bold">OBSTACLE</text>
+      <text x="360" y="95"  fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">Stop, wait</text>
+      <text x="360" y="105" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">1s, retry</text>
+
+      <!-- DONE -->
+      <rect x="590" y="180" width="100" height="50" rx="8" fill="#2a1a40" stroke="#d2a8ff" stroke-width="1.5"/>
+      <text x="640" y="200" fill="#d2a8ff" font-size="10" text-anchor="middle" font-family="Consolas" font-weight="bold">DONE</text>
+      <text x="640" y="215" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">All rows swept,</text>
+      <text x="640" y="225" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">return to dock</text>
+
+      <!-- DOCK -->
+      <rect x="730" y="180" width="100" height="50" rx="8" fill="#1a3520" stroke="#3fb950" stroke-width="1.5"/>
+      <text x="780" y="200" fill="#3fb950" font-size="10" text-anchor="middle" font-family="Consolas" font-weight="bold">DOCK</text>
+      <text x="780" y="215" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">Drive to dock,</text>
+      <text x="780" y="225" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">motors off</text>
+
+      <!-- ESTOP -->
+      <rect x="450" y="310" width="100" height="50" rx="8" fill="#3a0d0d" stroke="#f85149" stroke-width="2"/>
+      <text x="500" y="330" fill="#f85149" font-size="10" text-anchor="middle" font-family="Consolas" font-weight="bold">E-STOP</text>
+      <text x="500" y="345" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">Low battery /</text>
+      <text x="500" y="355" fill="#8b949e" font-size="8"  text-anchor="middle" font-family="Consolas">no water / error</text>
+
+      <!-- Arrows -->
+      <line x1="130" y1="205" x2="170" y2="205" stroke="#3fb950" stroke-width="1.5"/>
+      <polygon points="168,201 170,205 168,209" fill="#3fb950"/>
+      <text x="150" y="198" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">RTC</text>
+
+      <line x1="270" y1="205" x2="310" y2="205" stroke="#3fb950" stroke-width="1.5"/>
+      <polygon points="308,201 310,205 308,209" fill="#3fb950"/>
+
+      <line x1="410" y1="205" x2="450" y2="205" stroke="#f2cc60" stroke-width="1.5"/>
+      <polygon points="448,201 450,205 448,209" fill="#f2cc60"/>
+      <text x="430" y="198" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">edge</text>
+
+      <line x1="550" y1="205" x2="590" y2="205" stroke="#d2a8ff" stroke-width="1.5"/>
+      <polygon points="588,201 590,205 588,209" fill="#d2a8ff"/>
+      <text x="570" y="198" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">all rows</text>
+
+      <line x1="690" y1="205" x2="730" y2="205" stroke="#3fb950" stroke-width="1.5"/>
+      <polygon points="728,201 730,205 728,209" fill="#3fb950"/>
+
+      <!-- TURN back to SWEEP -->
+      <path d="M500,180 Q500,140 360,140 Q360,150 360,180" stroke="#f2cc60" stroke-width="1.5" fill="none" stroke-dasharray="4,2"/>
+      <polygon points="356,178 360,180 364,178" fill="#f2cc60"/>
+      <text x="430" y="135" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">next row</text>
+
+      <!-- SWEEP to OBSTACLE -->
+      <line x1="360" y1="180" x2="360" y2="110" stroke="#f85149" stroke-width="1.5"/>
+      <polygon points="356,112 360,110 364,112" fill="#f85149"/>
+      <text x="390" y="145" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">obstacle</text>
+
+      <!-- OBSTACLE back to SWEEP -->
+      <path d="M410,85 Q470,85 430,155 Q410,170 410,180" stroke="#f85149" stroke-width="1" fill="none" stroke-dasharray="3,2"/>
+      <text x="480" y="110" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">cleared</text>
+
+      <!-- E-STOP from anywhere -->
+      <line x1="360" y1="230" x2="430" y2="320" stroke="#f85149" stroke-width="1" stroke-dasharray="3,2"/>
+      <polygon points="429,318 430,320 432,317" fill="#f85149"/>
+      <text x="370" y="295" fill="#f85149" font-size="8" font-family="Consolas">low bat / no water</text>
+
+      <!-- DOCK back to IDLE -->
+      <path d="M780,230 Q780,380 80,380 Q80,260 80,230" stroke="#58a6ff" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+      <polygon points="76,232 80,230 84,232" fill="#58a6ff"/>
+      <text x="430" y="395" fill="#8b949e" font-size="8" text-anchor="middle" font-family="Consolas">charging complete → IDLE</text>
+    </svg>
+    </div>
+
+    <h3>What Each State Does</h3>
+    <table>
+      <tr><th>State</th><th>Motors</th><th>Brushes</th><th>Water</th><th>Exit condition</th></tr>
+      <tr><td class="tc1">IDLE</td><td>OFF</td><td>OFF</td><td>OFF</td><td>RTC alarm fires (e.g. 6:00 AM)</td></tr>
+      <tr><td class="tc2">START</td><td>Ramp up</td><td>ON</td><td>ON</td><td>500ms warm-up complete</td></tr>
+      <tr><td class="tc2">SWEEP</td><td>Forward</td><td>ON</td><td>ON</td><td>Edge sensor triggered</td></tr>
+      <tr><td class="tc3">TURN</td><td>Differential spin + shift</td><td>ON</td><td>ON</td><td>Spin 90°+shift+spin 90° complete</td></tr>
+      <tr><td class="tc4">OBSTACLE</td><td>STOP</td><td>ON</td><td>ON</td><td>Obstacle gone OR timeout</td></tr>
+      <tr><td style="color:#d2a8ff">DONE</td><td>Return drive</td><td>OFF</td><td>OFF</td><td>Dock IR sensor triggered</td></tr>
+      <tr><td class="tc2">DOCK</td><td>OFF</td><td>OFF</td><td>OFF</td><td>Charging begins → IDLE</td></tr>
+      <tr><td style="color:#f85149">E-STOP</td><td>OFF</td><td>OFF</td><td>OFF</td><td>Manual reset required</td></tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PHASE 2 — EXTRA COMPONENTS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="phase" id="p2">
+  <div class="phase-header">
+    <div class="phase-num">2</div>
+    <div>
+      <div class="phase-title">ADDITIONAL COMPONENTS FOR FULL AUTONOMY</div>
+      <div class="phase-sub">What to buy on top of the base build</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <h3>Why Each Sensor is Needed</h3>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title" style="color:#f85149;">IR Edge Sensors × 4</div>
+        <p style="color:#8b949e;font-size:10px;">Detect the edge of the solar panel. When the sensor stops seeing a surface below it, the robot knows it has reached the end of a row and must turn. One at each corner.</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:#fb8f44;">HC-SR04 Ultrasonic × 2</div>
+        <p style="color:#8b949e;font-size:10px;">Detect obstacles in front (e.g. panel frame, bird, debris). If something is closer than 8cm the robot stops and waits. Two sensors give left/right coverage.</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:#f2cc60;">DS3231 RTC Module</div>
+        <p style="color:#8b949e;font-size:10px;">Real-time clock. Keeps accurate time even when powered off. You set a daily alarm (e.g. 6:00 AM) and the robot automatically starts cleaning without any human input.</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:#3fb950;">ESP8266 WiFi Module</div>
+        <p style="color:#8b949e;font-size:10px;">Reports robot status (cleaning / done / low battery / error) to your phone via a simple web page or MQTT. You can monitor from anywhere on the same WiFi network.</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:#58a6ff;">IR Dock Sensor × 1</div>
+        <p style="color:#8b949e;font-size:10px;">A simple IR LED + photodiode pair on the docking station. When the robot returns and the dock sensor triggers, it knows it has arrived and shuts down.</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:#d2a8ff;">MPU-6050 IMU (already listed)</div>
+        <p style="color:#8b949e;font-size:10px;">Detects if the robot tilts too much (panel angle changes, slip). Triggers E-STOP if tilt exceeds threshold. Already in base BOM — confirm it is installed.</p>
+      </div>
+    </div>
+
+    <h3 id="p2b">Full Updated BOM — Autonomous Extra Parts</h3>
+    <table>
+      <tr><th>Component</th><th>Qty</th><th>Purpose</th><th>Approx Cost</th><th>Where to Buy</th></tr>
+      <tr><td class="tc1">TCRT5000 IR sensor module</td><td>4</td><td>Edge / cliff detection (one per corner)</td><td class="tc3">$0.50 each</td><td>AliExpress</td></tr>
+      <tr><td class="tc1">HC-SR04 ultrasonic</td><td>2</td><td>Front obstacle detection</td><td class="tc3">$0.80 each</td><td>AliExpress</td></tr>
+      <tr><td class="tc1">DS3231 RTC module</td><td>1</td><td>Scheduled daily cleaning alarm</td><td class="tc3">$1.50</td><td>AliExpress</td></tr>
+      <tr><td class="tc1">CR2032 coin cell</td><td>1</td><td>DS3231 backup battery</td><td class="tc3">$0.30</td><td>Any store</td></tr>
+      <tr><td class="tc1">ESP8266 NodeMCU</td><td>1</td><td>WiFi status reporting</td><td class="tc3">$2.50</td><td>AliExpress</td></tr>
+      <tr><td class="tc1">IR LED + IR photodiode pair</td><td>1</td><td>Dock detection sensor</td><td class="tc3">$0.50</td><td>AliExpress</td></tr>
+      <tr><td class="tc1">10kΩ resistors</td><td>10</td><td>Pull-ups / voltage dividers</td><td class="tc3">$0.10</td><td>Any electronics store</td></tr>
+      <tr><td class="tc1">100nF ceramic caps</td><td>6</td><td>Decoupling on sensor VCC pins</td><td class="tc3">$0.10</td><td>Any electronics store</td></tr>
+      <tr><td class="tc1">BC547 NPN transistor</td><td>1</td><td">SBUS signal inverter (if using SBUS RC)</td><td class="tc3">$0.10</td><td>Any electronics store</td></tr>
+      <tr><td class="tc1">Small perfboard 5×7cm</td><td>1</td><td>Mount MOSFETs + resistors neatly</td><td class="tc3">$0.50</td><td>AliExpress</td></tr>
+      <tr><td style="color:#f2cc60;font-weight:bold;">TOTAL EXTRA COST</td><td></td><td></td><td style="color:#3fb950;font-weight:bold;">~$8–10 USD</td><td></td></tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PHASE 3 — HARDWARE ASSEMBLY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="phase" id="p3a">
+  <div class="phase-header">
+    <div class="phase-num">3</div>
+    <div>
+      <div class="phase-title">HARDWARE ASSEMBLY — SENSOR MOUNTING + WIRING</div>
+      <div class="phase-sub">Exact positions for every sensor on the robot body</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <h3>Sensor Mounting Positions</h3>
+    <!-- Robot top-view SVG -->
+    <div class="dia">
+    <svg width="100%" viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg">
+      <!-- Robot body top view -->
+      <rect x="200" y="80"  width="300" height="240" rx="10" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+      <text x="350" y="200" fill="#30363d" font-size="40" text-anchor="middle" font-family="Consolas">TOP</text>
+      <text x="350" y="230" fill="#30363d" font-size="12" text-anchor="middle" font-family="Consolas">VIEW</text>
+
+      <!-- Front label -->
+      <text x="350" y="70" fill="#8b949e" font-size="11" text-anchor="middle" font-family="Consolas">▲ FRONT (direction of travel →)</text>
+
+      <!-- Track left -->
+      <rect x="160" y="80"  width="35" height="240" rx="4" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+      <text x="177" y="205" fill="#8b949e" font-size="9" text-anchor="middle" font-family="Consolas" transform="rotate(-90,177,205)">ST-320 TRACK</text>
+      <!-- Track right -->
+      <rect x="505" y="80"  width="35" height="240" rx="4" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+      <text x="522" y="205" fill="#8b949e" font-size="9" text-anchor="middle" font-family="Consolas" transform="rotate(90,522,205)">ST-320 TRACK</text>
+
+      <!-- IR edge sensors — 4 corners -->
+      <!-- FL -->
+      <circle cx="200" cy="80"  r="12" fill="#3a0d0d" stroke="#f85149" stroke-width="2"/>
+      <text x="200" y="84"  fill="#f85149" font-size="8" text-anchor="middle" font-family="Consolas">IR</text>
+      <text x="165" y="60"  fill="#f85149" font-size="9" font-family="Consolas">FL Edge</text>
+      <line x1="200" y1="68" x2="180" y2="58" stroke="#f85149" stroke-width="1" stroke-dasharray="2,2"/>
+
+      <!-- FR -->
+      <circle cx="500" cy="80"  r="12" fill="#3a0d0d" stroke="#f85149" stroke-width="2"/>
+      <text x="500" y="84"  fill="#f85149" font-size="8" text-anchor="middle" font-family="Consolas">IR</text>
+      <text x="505" y="60"  fill="#f85149" font-size="9" font-family="Consolas">FR Edge</text>
+      <line x1="500" y1="68" x2="515" y2="58" stroke="#f85149" stroke-width="1" stroke-dasharray="2,2"/>
+
+      <!-- RL -->
+      <circle cx="200" cy="320" r="12" fill="#3a0d0d" stroke="#f85149" stroke-width="2"/>
+      <text x="200" y="324" fill="#f85149" font-size="8" text-anchor="middle" font-family="Consolas">IR</text>
+      <text x="140" y="340" fill="#f85149" font-size="9" font-family="Consolas">RL Edge</text>
+      <line x1="200" y1="332" x2="175" y2="345" stroke="#f85149" stroke-width="1" stroke-dasharray="2,2"/>
+
+      <!-- RR -->
+      <circle cx="500" cy="320" r="12" fill="#3a0d0d" stroke="#f85149" stroke-width="2"/>
+      <text x="500" y="324" fill="#f85149" font-size="8" text-anchor="middle" font-family="Consolas">IR</text>
+      <text x="505" y="340" fill="#f85149" font-size="9" font-family="Consolas">RR Edge</text>
+      <line x1="500" y1="332" x2="520" y2="345" stroke="#f85149" stroke-width="1" stroke-dasharray="2,2"/>
+
+      <!-- Ultrasonic front × 2 -->
+      <rect x="260" y="68" width="35" height="20" rx="3" fill="#3a1a00" stroke="#fb8f44" stroke-width="1.5"/>
+      <text x="277" y="81" fill="#fb8f44" font-size="8" text-anchor="middle" font-family="Consolas">US L</text>
+      <rect x="405" y="68" width="35" height="20" rx="3" fill="#3a1a00" stroke="#fb8f44" stroke-width="1.5"/>
+      <text x="422" y="81" fill="#fb8f44" font-size="8" text-anchor="middle" font-family="Consolas">US R</text>
+      <text x="350" y="55" fill="#fb8f44" font-size="9" text-anchor="middle" font-family="Consolas">HC-SR04 Ultrasonic (front obstacle)</text>
+
+      <!-- GF555 LEFT motor (near left track) -->
+      <circle cx="265" cy="200" r="22" fill="#1a2a40" stroke="#58a6ff" stroke-width="1.5"/>
+      <text x="265" y="196" fill="#58a6ff" font-size="7" text-anchor="middle" font-family="Consolas">GF555-L</text>
+      <text x="265" y="207" fill="#58a6ff" font-size="7" text-anchor="middle" font-family="Consolas">BTS7960#1</text>
+
+      <!-- GF555 RIGHT motor (near right track) -->
+      <circle cx="435" cy="200" r="22" fill="#1a2a40" stroke="#79c0ff" stroke-width="1.5"/>
+      <text x="435" y="196" fill="#79c0ff" font-size="7" text-anchor="middle" font-family="Consolas">GF555-R</text>
+      <text x="435" y="207" fill="#79c0ff" font-size="7" text-anchor="middle" font-family="Consolas">BTS7960#2</text>
+
+      <!-- Brush rollers -->
+      <rect x="210" y="88"  width="280" height="25" rx="3" fill="#1a3535" stroke="#39c5cf" stroke-width="1"/>
+      <text x="350" y="104" fill="#39c5cf" font-size="9" text-anchor="middle" font-family="Consolas">FRONT BRUSH ROLLER</text>
+      <rect x="210" y="287" width="280" height="25" rx="3" fill="#1a3535" stroke="#39c5cf" stroke-width="1"/>
+      <text x="350" y="303" fill="#39c5cf" font-size="9" text-anchor="middle" font-family="Consolas">REAR BRUSH ROLLER</text>
+
+      <!-- IMU center -->
+      <rect x="325" y="155" width="50" height="30" rx="3" fill="#2a1a40" stroke="#d2a8ff" stroke-width="1"/>
+      <text x="350" y="170" fill="#d2a8ff" font-size="8" text-anchor="middle" font-family="Consolas">MPU</text>
+      <text x="350" y="180" fill="#d2a8ff" font-size="8" text-anchor="middle" font-family="Consolas">6050</text>
+
+      <!-- Dock IR sensor — rear center -->
+      <rect x="330" y="322" width="40" height="16" rx="3" fill="#1a3520" stroke="#3fb950" stroke-width="1.5"/>
+      <text x="350" y="333" fill="#3fb950" font-size="8" text-anchor="middle" font-family="Consolas">DOCK IR</text>
+      <text x="350" y="358" fill="#3fb950" font-size="9" text-anchor="middle" font-family="Consolas">▼ REAR / DOCK SIDE</text>
+
+      <!-- Legend -->
+      <rect x="10" y="10" width="130" height="90" rx="4" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+      <text x="75" y="25" fill="#8b949e" font-size="9" text-anchor="middle" font-family="Consolas">LEGEND</text>
+      <circle cx="25" cy="40" r="6" fill="#3a0d0d" stroke="#f85149" stroke-width="1.5"/>
+      <text x="35" y="44" fill="#f85149" font-size="8" font-family="Consolas">IR Edge sensor</text>
+      <rect x="19" y="55" width="12" height="8" rx="1" fill="#3a1a00" stroke="#fb8f44" stroke-width="1"/>
+      <text x="35" y="62" fill="#fb8f44" font-size="8" font-family="Consolas">Ultrasonic</text>
+      <rect x="19" y="72" width="12" height="8" rx="1" fill="#1a3520" stroke="#3fb950" stroke-width="1"/>
+      <text x="35" y="79" fill="#3fb950" font-size="8" font-family="Consolas">Dock IR</text>
+      <rect x="19" y="88" width="12" height="8" rx="1" fill="#2a1a40" stroke="#d2a8ff" stroke-width="1"/>
+      <text x="35" y="95" fill="#d2a8ff" font-size="8" font-family="Consolas">IMU</text>
+    </svg>
+    </div>
+
+    <h3>Step-by-Step Sensor Installation</h3>
+
+    <div class="step">
+      <div class="step-num">STEP 1</div>
+      <div class="step-title">Mount IR Edge Sensors (× 4 corners)</div>
+      <ul>
+        <li>Use TCRT5000 IR sensor modules — they have VCC, GND, DO (digital out), AO (analog out)</li>
+        <li>Mount one sensor pointing <strong>straight down</strong> at each of the 4 corners of the robot chassis</li>
+        <li>Sensor face must be 5–15mm above the solar panel surface when robot is on the panel</li>
+        <li>Use M2 screws or hot glue into a small 3D-printed bracket at each corner</li>
+        <li>Angle sensor slightly outward (10–15°) so it detects the edge before the wheel reaches it</li>
+        <li>Route sensor wires along the inside of the chassis frame — use cable clips</li>
+        <li>Label each wire: FL, FR, RL, RR</li>
+      </ul>
+      <div class="tip">✓ Test each sensor with a multimeter before installing. Hold sensor over a white surface → DO pin should be LOW (0V). Move off surface (into air) → DO pin should go HIGH (5V).</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 2</div>
+      <div class="step-title">Mount HC-SR04 Ultrasonic Sensors (× 2 front)</div>
+      <ul>
+        <li>Mount both sensors on the FRONT face of the robot, side by side</li>
+        <li>Left sensor: centered on left half of front face</li>
+        <li>Right sensor: centered on right half of front face</li>
+        <li>Sensors must face forward horizontally — parallel to the panel surface</li>
+        <li>Use M3 screws through sensor mounting holes into the chassis front plate</li>
+        <li>Keep sensors at least 3cm apart to avoid acoustic interference</li>
+        <li>Route trigger + echo wires back through the chassis to MCU</li>
+      </ul>
+      <div class="warn">⚠ HC-SR04 runs on 5V but ECHO pin outputs 5V which can damage Arduino input if not using 5V-tolerant pins. Add a voltage divider on ECHO: 1kΩ series + 2kΩ to GND → gives 3.3V safe signal. Or use HC-SR04P (3.3V version).</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 3</div>
+      <div class="step-title">Mount DS3231 RTC Module</div>
+      <ul>
+        <li>Mount inside chassis on electronics plate using M2 nylon standoffs</li>
+        <li>Insert CR2032 coin cell into the RTC module battery holder before mounting</li>
+        <li>Connect via I2C bus (shared with MPU-6050 — same SDA/SCL lines)</li>
+        <li>DS3231 I2C address is 0x68 — MPU-6050 also defaults to 0x68</li>
+        <li><strong>Set MPU-6050 AD0 pin HIGH</strong> to change its address to 0x69 — avoids conflict</li>
+        <li>Connect a small wire from AD0 on MPU-6050 to 3.3V/5V rail to permanently set to 0x69</li>
+      </ul>
+      <div class="info">ℹ I2C bus can have multiple devices — DS3231 (0x68) and MPU-6050 (0x69) share the same SDA/SCL wires. Only two wires needed for both devices.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 4</div>
+      <div class="step-title">Mount ESP8266 NodeMCU (WiFi Module)</div>
+      <ul>
+        <li>Mount on electronics plate using M3 nylon standoffs</li>
+        <li>Power from 3.3V rail (ESP8266 is 3.3V — do NOT connect to 5V directly)</li>
+        <li>Connect ESP8266 RX → Arduino Mega TX2 (D16) via voltage divider (5V → 3.3V): 1kΩ + 2kΩ</li>
+        <li>Connect ESP8266 TX → Arduino Mega RX2 (D17) directly (3.3V is safe for Mega input)</li>
+        <li>ESP8266 GND → Common GND</li>
+        <li>Ensure antenna end of ESP8266 is near the robot edge — not buried under metal</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">STEP 5</div>
+      <div class="step-title">Mount Dock IR Sensor Pair</div>
+      <ul>
+        <li>IR LED: mount on the docking station, pointing outward</li>
+        <li>IR photodiode/receiver: mount on the REAR of the robot</li>
+        <li>When robot backs into dock, IR beam hits receiver → dock detected</li>
+        <li>Wire IR LED: 5V → 220Ω resistor → LED+ → LED− → GND</li>
+        <li>Wire IR receiver: VCC → 5V, GND → GND, OUT → Arduino D30</li>
+        <li>Add 10kΩ pull-up resistor from OUT to 5V on receiver</li>
+        <li>Align LED and receiver at same height — test beam alignment before final mount</li>
+      </ul>
+    </div>
+
+    <h3 id="p3b">Complete Autonomous Wiring Table</h3>
+    <table>
+      <tr><th>Component</th><th>Pin</th><th>Arduino Mega Pin</th><th>Wire</th></tr>
+      <!-- Edge sensors — pins D26–D29 -->
+      <tr><td class="tc1">IR Edge FL (TCRT5000)</td><td>DO</td><td>D26</td><td>26AWG</td></tr>
+      <tr><td class="tc1">IR Edge FR (TCRT5000)</td><td>DO</td><td>D27</td><td>26AWG</td></tr>
+      <tr><td class="tc1">IR Edge RL (TCRT5000)</td><td>DO</td><td>D28</td><td>26AWG</td></tr>
+      <tr><td class="tc1">IR Edge RR (TCRT5000)</td><td>DO</td><td>D29</td><td>26AWG</td></tr>
+      <tr><td class="tc1">All IR sensors VCC</td><td>VCC</td><td>5V Rail</td><td>22AWG</td></tr>
+      <tr><td class="tc1">All IR sensors GND</td><td>GND</td><td>GND</td><td>22AWG</td></tr>
+      <!-- Ultrasonic — pins D30–D33 -->
+      <tr><td class="tc4">HC-SR04 Left</td><td>TRIG</td><td>D30</td><td>26AWG</td></tr>
+      <tr><td class="tc4">HC-SR04 Left</td><td>ECHO</td><td>D31 (via 1kΩ+2kΩ divider)</td><td>26AWG</td></tr>
+      <tr><td class="tc4">HC-SR04 Right</td><td>TRIG</td><td>D32</td><td>26AWG</td></tr>
+      <tr><td class="tc4">HC-SR04 Right</td><td>ECHO</td><td>D33 (via 1kΩ+2kΩ divider)</td><td>26AWG</td></tr>
+      <!-- RTC + I2C -->
+      <tr><td class="tc3">DS3231 RTC</td><td>SDA</td><td>D20 (I2C — shared bus)</td><td>22AWG</td></tr>
+      <tr><td class="tc3">DS3231 RTC</td><td>SCL</td><td>D21 (I2C — shared bus)</td><td>22AWG</td></tr>
+      <tr><td class="tc3">DS3231 RTC</td><td>SQW/INT</td><td>D35 (polled in loop)</td><td>26AWG</td></tr>
+      <!-- MPU-6050 — same I2C bus, address 0x69 -->
+      <tr><td style="color:#d2a8ff">MPU-6050</td><td>SDA</td><td>D20 (I2C — shared bus)</td><td>22AWG</td></tr>
+      <tr><td style="color:#d2a8ff">MPU-6050</td><td>SCL</td><td>D21 (I2C — shared bus)</td><td>22AWG</td></tr>
+      <tr><td style="color:#d2a8ff">MPU-6050 AD0</td><td>AD0</td><td>3.3V → addr=0x69 (avoid conflict with DS3231 at 0x68)</td><td>short jumper</td></tr>
+      <!-- ESP8266 -->
+      <tr><td class="tc2">ESP8266</td><td>RX</td><td>D16 TX2 (via 1kΩ+2kΩ divider 5V→3.3V)</td><td>26AWG</td></tr>
+      <tr><td class="tc2">ESP8266</td><td>TX</td><td>D17 RX2 (3.3V direct — safe for Mega)</td><td>26AWG</td></tr>
+      <!-- Dock -->
+      <tr><td class="tc2">Dock IR receiver</td><td>OUT</td><td>D34</td><td>26AWG</td></tr>
+      <!-- Drive (unchanged) -->
+      <!-- Drive — BTS7960 #1 (LEFT motor) -->
+      <tr><td class="tc1">BTS7960 #1 LEFT — RPWM</td><td>RPWM</td><td>D9</td><td>26AWG</td></tr>
+      <tr><td class="tc1">BTS7960 #1 LEFT — LPWM</td><td>LPWM</td><td>D10</td><td>26AWG</td></tr>
+      <tr><td class="tc1">BTS7960 #1 LEFT — R_EN</td><td>R_EN</td><td>D2</td><td>26AWG</td></tr>
+      <tr><td class="tc1">BTS7960 #1 LEFT — L_EN</td><td>L_EN</td><td>D3</td><td>26AWG</td></tr>
+      <!-- Drive — BTS7960 #2 (RIGHT motor) -->
+      <tr><td style="color:#79c0ff">BTS7960 #2 RIGHT — RPWM</td><td>RPWM</td><td>D11</td><td>26AWG</td></tr>
+      <tr><td style="color:#79c0ff">BTS7960 #2 RIGHT — LPWM</td><td>LPWM</td><td>D12</td><td>26AWG</td></tr>
+      <tr><td style="color:#79c0ff">BTS7960 #2 RIGHT — R_EN</td><td>R_EN</td><td>D4</td><td>26AWG</td></tr>
+      <tr><td style="color:#79c0ff">BTS7960 #2 RIGHT — L_EN</td><td>L_EN</td><td>D5</td><td>26AWG</td></tr>
+      <!-- Brushes -->
+      <tr><td class="tc1">L298N ENA/ENB</td><td>ENA/ENB</td><td>D6/D7</td><td>26AWG</td></tr>
+      <tr><td class="tc1">L298N IN1–IN4</td><td>IN1–IN4</td><td>D22/D23/D24/D25</td><td>26AWG</td></tr>
+      <tr><td class="tc1">Pump MOSFET</td><td>Gate</td><td>D8</td><td>26AWG</td></tr>
+      <tr><td class="tc1">Solenoid MOSFET</td><td>Gate</td><td>D13</td><td>26AWG</td></tr>
+      <tr><td class="tc1">GF555 #1 LEFT Encoder A/B</td><td>A/B</td><td>D18/D19</td><td>28AWG shielded</td></tr>
+      <tr><td style="color:#79c0ff">GF555 #2 RIGHT Encoder A/B</td><td>A/B</td><td>D36/D37</td><td>28AWG shielded</td></tr>
+      <tr><td class="tc1">Water level sensor</td><td>Signal</td><td>A0</td><td>26AWG</td></tr>
+      <tr><td class="tc1">Battery voltage divider</td><td>Mid</td><td>A1</td><td>26AWG</td></tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PHASE 4 — FIRMWARE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="phase" id="p4a">
+  <div class="phase-header">
+    <div class="phase-num">4</div>
+    <div>
+      <div class="phase-title">FIRMWARE — COMPLETE AUTONOMOUS CODE</div>
+      <div class="phase-sub">Upload to Arduino Mega 2560</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <div class="info">ℹ Install these libraries first via Arduino IDE → Tools → Manage Libraries:<br>
+    • <strong>RTClib</strong> by Adafruit<br>
+    • <strong>Wire</strong> (built-in)<br>
+    • <strong>MPU6050</strong> by Electronic Cats (or Jeff Rowberg)
+    </div>
+
+    <h3>Main Firmware — solarbot_auto.ino</h3>
+<pre>
+<span class="pp">#include</span> <span class="str">&lt;Wire.h&gt;</span>
+<span class="pp">#include</span> <span class="str">&lt;RTClib.h&gt;</span>
+<span class="pp">#include</span> <span class="str">&lt;MPU6050.h&gt;</span>
+
+<span class="cm">// ─── PIN DEFINITIONS ──────────────────────────────────────────</span>
+<span class="cm">// BTS7960 #1 — LEFT GF555 motor (left track)</span>
+<span class="pp">#define</span> L_RPWM      9    <span class="cm">// left motor forward PWM</span>
+<span class="pp">#define</span> L_LPWM     10    <span class="cm">// left motor reverse PWM</span>
+<span class="pp">#define</span> L_REN       2    <span class="cm">// left motor forward enable</span>
+<span class="pp">#define</span> L_LEN       3    <span class="cm">// left motor reverse enable</span>
+
+<span class="cm">// BTS7960 #2 — RIGHT GF555 motor (right track)</span>
+<span class="pp">#define</span> R_RPWM     11    <span class="cm">// right motor forward PWM</span>
+<span class="pp">#define</span> R_LPWM     12    <span class="cm">// right motor reverse PWM</span>
+<span class="pp">#define</span> R_REN       4    <span class="cm">// right motor forward enable</span>
+<span class="pp">#define</span> R_LEN       5    <span class="cm">// right motor reverse enable</span>
+
+<span class="cm">// Brush motors (L298N) — drives both 6331K61 brush rollers</span>
+<span class="pp">#define</span> PIN_BRUSH1_EN  6
+<span class="pp">#define</span> PIN_BRUSH2_EN  7
+<span class="pp">#define</span> PIN_BRUSH1_IN1 22
+<span class="pp">#define</span> PIN_BRUSH1_IN2 23
+<span class="pp">#define</span> PIN_BRUSH2_IN3 24
+<span class="pp">#define</span> PIN_BRUSH2_IN4 25
+
+<span class="cm">// Actuators</span>
+<span class="pp">#define</span> PIN_PUMP      8
+<span class="pp">#define</span> PIN_SOLENOID 13
+
+<span class="cm">// Encoders — hardware interrupt pins only (D18/D19 = INT5/INT4 on Mega)</span>
+<span class="pp">#define</span> PIN_ENC_L_A  18   <span class="cm">// left GF555 encoder channel A</span>
+<span class="pp">#define</span> PIN_ENC_L_B  19   <span class="cm">// left GF555 encoder channel B</span>
+<span class="pp">#define</span> PIN_ENC_R_A  36   <span class="cm">// right GF555 encoder channel A (NOT I2C pins!)</span>
+<span class="pp">#define</span> PIN_ENC_R_B  37   <span class="cm">// right GF555 encoder channel B</span>
+
+<span class="cm">// IR edge sensors (LOW = on panel, HIGH = off panel/edge)</span>
+<span class="pp">#define</span> PIN_IR_FL   26
+<span class="pp">#define</span> PIN_IR_FR   27
+<span class="pp">#define</span> PIN_IR_RL   28
+<span class="pp">#define</span> PIN_IR_RR   29
+
+<span class="cm">// Ultrasonic (front obstacle)</span>
+<span class="pp">#define</span> PIN_US_L_TRIG 30
+<span class="pp">#define</span> PIN_US_L_ECHO 31
+<span class="pp">#define</span> PIN_US_R_TRIG 32
+<span class="pp">#define</span> PIN_US_R_ECHO 33
+
+<span class="cm">// Dock sensor</span>
+<span class="pp">#define</span> PIN_DOCK    34
+
+<span class="cm">// RTC alarm interrupt — D20 conflicts with I2C SDA, use D35 instead with PCINT</span>
+<span class="pp">#define</span> PIN_RTC_INT  35
+
+<span class="cm">// Analog</span>
+<span class="pp">#define</span> PIN_WATER_LVL A0
+<span class="pp">#define</span> PIN_VBAT      A1
+
+<span class="cm">// ─── CONSTANTS ────────────────────────────────────────────────</span>
+<span class="pp">#define</span> DRIVE_SPEED_FWD   180   <span class="cm">// 0-255 PWM, ~70% speed</span>
+<span class="pp">#define</span> DRIVE_SPEED_TURN  120   <span class="cm">// turn speed for differential steering</span>
+<span class="pp">#define</span> DRIVE_SPEED_DOCK  100   <span class="cm">// slow approach to dock</span>
+<span class="pp">#define</span> BRUSH_SPEED       200   <span class="cm">// brush motor PWM</span>
+<span class="pp">#define</span> OBSTACLE_CM         8   <span class="cm">// stop if object closer than 8cm</span>
+<span class="pp">#define</span> SPIN_TIME_MS     1800   <span class="cm">// ms for 180° in-place spin (calibrate!)</span>
+<span class="pp">#define</span> SHIFT_TIME_MS     700   <span class="cm">// ms to shift one row width after spin</span>
+<span class="pp">#define</span> MAX_ROWS           14   <span class="cm">// panel 2000mm / brush ~143mm = 14 rows</span>
+<span class="pp">#define</span> LOW_BATTERY_MV  21000   <span class="cm">// return to dock below 21V (24V pack)</span>
+<span class="pp">#define</span> LOW_WATER_VAL     100   <span class="cm">// ADC value below which water is low</span>
+<span class="pp">#define</span> TILT_LIMIT_DEG     20   <span class="cm">// E-STOP if tilt exceeds 20°</span>
+
+<span class="cm">// ─── STATE MACHINE ────────────────────────────────────────────</span>
+<span class="kw">enum</span> <span class="fn">State</span> {
+  STATE_IDLE,
+  STATE_START,
+  STATE_SWEEP,
+  STATE_TURN,
+  STATE_OBSTACLE,
+  STATE_DONE,
+  STATE_DOCK,
+  STATE_ESTOP
+};
+
+<span class="fn">State</span> currentState = STATE_IDLE;
+<span class="kw">int</span>  rowCount = <span class="num">0</span>;
+<span class="kw">bool</span> sweepDirection = <span class="kw">true</span>;  <span class="cm">// true = forward, false = reverse</span>
+<span class="kw">volatile bool</span> rtcAlarm = <span class="kw">false</span>;
+
+<span class="cm">// ─── OBJECTS ──────────────────────────────────────────────────</span>
+<span class="fn">RTC_DS3231</span> rtc;
+<span class="fn">MPU6050</span>    mpu;
+
+<span class="cm">// ─── ENCODERS — one per GF555 motor ───────────────────────────</span>
+<span class="kw">volatile long</span> encLeft  = <span class="num">0</span>;
+<span class="kw">volatile long</span> encRight = <span class="num">0</span>;
+<span class="kw">void</span> <span class="fn">encLeftISR</span>()  { encLeft++;  }
+<span class="kw">void</span> <span class="fn">encRightISR</span>() { encRight++; }
+
+<span class="cm">// ─── RTC ALARM ISR ────────────────────────────────────────────</span>
+<span class="kw">void</span> <span class="fn">rtcAlarmISR</span>() { rtcAlarm = <span class="kw">true</span>; }
+
+<span class="cm">// ═══════════════════════════════════════════════════════════════
+// SETUP
+// ═══════════════════════════════════════════════════════════════</span>
+<span class="kw">void</span> <span class="fn">setup</span>() {
+  Serial.<span class="fn">begin</span>(<span class="num">115200</span>);
+  Serial2.<span class="fn">begin</span>(<span class="num">115200</span>);  <span class="cm">// to ESP8266</span>
+  Wire.<span class="fn">begin</span>();
+
+  <span class="cm">// BTS7960 #1 — LEFT motor</span>
+  <span class="fn">pinMode</span>(L_RPWM, OUTPUT);  <span class="fn">pinMode</span>(L_LPWM, OUTPUT);
+  <span class="fn">pinMode</span>(L_REN,  OUTPUT);  <span class="fn">pinMode</span>(L_LEN,  OUTPUT);
+
+  <span class="cm">// BTS7960 #2 — RIGHT motor</span>
+  <span class="fn">pinMode</span>(R_RPWM, OUTPUT);  <span class="fn">pinMode</span>(R_LPWM, OUTPUT);
+  <span class="fn">pinMode</span>(R_REN,  OUTPUT);  <span class="fn">pinMode</span>(R_LEN,  OUTPUT);
+
+  <span class="cm">// Brush pins</span>
+  <span class="fn">pinMode</span>(PIN_BRUSH1_EN,  OUTPUT);
+  <span class="fn">pinMode</span>(PIN_BRUSH2_EN,  OUTPUT);
+  <span class="fn">pinMode</span>(PIN_BRUSH1_IN1, OUTPUT);
+  <span class="fn">pinMode</span>(PIN_BRUSH1_IN2, OUTPUT);
+  <span class="fn">pinMode</span>(PIN_BRUSH2_IN3, OUTPUT);
+  <span class="fn">pinMode</span>(PIN_BRUSH2_IN4, OUTPUT);
+
+  <span class="cm">// Actuators</span>
+  <span class="fn">pinMode</span>(PIN_PUMP,     OUTPUT);
+  <span class="fn">pinMode</span>(PIN_SOLENOID, OUTPUT);
+
+  <span class="cm">// Sensors</span>
+  <span class="fn">pinMode</span>(PIN_IR_FL, INPUT);  <span class="fn">pinMode</span>(PIN_IR_FR, INPUT);
+  <span class="fn">pinMode</span>(PIN_IR_RL, INPUT);  <span class="fn">pinMode</span>(PIN_IR_RR, INPUT);
+  <span class="fn">pinMode</span>(PIN_US_L_TRIG, OUTPUT);  <span class="fn">pinMode</span>(PIN_US_L_ECHO, INPUT);
+  <span class="fn">pinMode</span>(PIN_US_R_TRIG, OUTPUT);  <span class="fn">pinMode</span>(PIN_US_R_ECHO, INPUT);
+  <span class="fn">pinMode</span>(PIN_DOCK, INPUT_PULLUP);
+
+  <span class="cm">// Encoder interrupts — D18=INT5, D19=INT4 on Mega (hardware ISR)</span>
+  <span class="fn">attachInterrupt</span>(<span class="fn">digitalPinToInterrupt</span>(PIN_ENC_L_A), encLeftISR,  RISING);
+  <span class="fn">attachInterrupt</span>(<span class="fn">digitalPinToInterrupt</span>(PIN_ENC_L_B), encRightISR, RISING); <span class="cm">// D19=INT4</span>
+
+  <span class="cm">// RTC setup</span>
+  <span class="kw">if</span> (!rtc.<span class="fn">begin</span>()) {
+    Serial.<span class="fn">println</span>(<span class="str">"RTC not found!"</span>);
+  } <span class="kw">else</span> {
+    rtc.<span class="fn">disable32K</span>();
+    rtc.<span class="fn">clearAlarm</span>(<span class="num">1</span>);
+    rtc.<span class="fn">clearAlarm</span>(<span class="num">2</span>);
+    <span class="cm">// Set daily alarm at 06:00:00</span>
+    rtc.<span class="fn">setAlarm1</span>(DateTime(<span class="num">0</span>,<span class="num">0</span>,<span class="num">0</span>,<span class="num">6</span>,<span class="num">0</span>,<span class="num">0</span>), DS3231_A1_Hour);
+    <span class="fn">pinMode</span>(PIN_RTC_INT, INPUT_PULLUP);
+    <span class="cm">// D35 uses PCINT2 (pin change interrupt, not hardware INT)</span>
+    <span class="cm">// Simplest: poll rtc.alarmFired() in loop() instead of using interrupt</span>
+    <span class="cm">// attachInterrupt not available on D35 — use digitalRead polling below</span>
+  }
+
+  <span class="cm">// IMU setup</span>
+  mpu.<span class="fn">initialize</span>();
+  mpu.<span class="fn">setFullScaleGyroRange</span>(MPU6050_GYRO_FS_250);
+  mpu.<span class="fn">setFullScaleAccelRange</span>(MPU6050_ACCEL_FS_2);
+
+  <span class="cm">// All off at start</span>
+  <span class="fn">driveStop</span>();
+  <span class="fn">brushOff</span>();
+  <span class="fn">waterOff</span>();
+
+  Serial.<span class="fn">println</span>(<span class="str">"SolarBot READY — waiting for RTC alarm (06:00)"</span>);
+  <span class="fn">wifiSend</span>(<span class="str">"STATUS:IDLE"</span>);
+}
+
+<span class="cm">// ═══════════════════════════════════════════════════════════════
+// MAIN LOOP — STATE MACHINE
+// ═══════════════════════════════════════════════════════════════</span>
+<span class="kw">void</span> <span class="fn">loop</span>() {
+
+  <span class="cm">// Always check E-STOP conditions</span>
+  <span class="kw">if</span> (<span class="fn">checkEStop</span>() &amp;&amp; currentState != STATE_ESTOP) {
+    currentState = STATE_ESTOP;
+  }
+
+  <span class="kw">switch</span> (currentState) {
+
+    <span class="kw">case</span> STATE_IDLE:
+      <span class="cm">// Poll RTC alarm (D35 is PCINT, not hardware INT)</span>
+      <span class="kw">if</span> (rtcAlarm || rtc.<span class="fn">alarmFired</span>(<span class="num">1</span>)) {
+        rtcAlarm = <span class="kw">false</span>;
+        rtc.<span class="fn">clearAlarm</span>(<span class="num">1</span>);
+        currentState = STATE_START;
+        Serial.<span class="fn">println</span>(<span class="str">"RTC alarm → starting clean"</span>);
+        <span class="fn">wifiSend</span>(<span class="str">"STATUS:STARTING"</span>);
+      }
+      <span class="kw">break</span>;
+
+    <span class="kw">case</span> STATE_START:
+      rowCount = <span class="num">0</span>;
+      sweepDirection = <span class="kw">true</span>;
+      <span class="fn">brushOn</span>();
+      <span class="fn">waterOn</span>();
+      <span class="fn">delay</span>(<span class="num">500</span>);           <span class="cm">// warm-up</span>
+      currentState = STATE_SWEEP;
+      <span class="fn">wifiSend</span>(<span class="str">"STATUS:SWEEPING"</span>);
+      <span class="kw">break</span>;
+
+    <span class="kw">case</span> STATE_SWEEP:
+      <span class="fn">driveSweep</span>();
+      <span class="kw">break</span>;
+
+    <span class="kw">case</span> STATE_TURN:
+      <span class="fn">doTurn</span>();
+      <span class="kw">break</span>;
+
+    <span class="kw">case</span> STATE_OBSTACLE:
+      <span class="fn">handleObstacle</span>();
+      <span class="kw">break</span>;
+
+    <span class="kw">case</span> STATE_DONE:
+      <span class="fn">brushOff</span>();
+      <span class="fn">waterOff</span>();
+      <span class="fn">driveToDock</span>();
+      <span class="kw">break</span>;
+
+    <span class="kw">case</span> STATE_DOCK:
+      <span class="fn">driveStop</span>();
+      <span class="fn">brushOff</span>();
+      <span class="fn">waterOff</span>();
+      <span class="fn">wifiSend</span>(<span class="str">"STATUS:DOCKED_CHARGING"</span>);
+      <span class="fn">delay</span>(<span class="num">60000</span>);          <span class="cm">// wait 1 minute then go idle</span>
+      currentState = STATE_IDLE;
+      <span class="kw">break</span>;
+
+    <span class="kw">case</span> STATE_ESTOP:
+      <span class="fn">driveStop</span>();
+      <span class="fn">brushOff</span>();
+      <span class="fn">waterOff</span>();
+      <span class="fn">wifiSend</span>(<span class="str">"STATUS:ESTOP"</span>);
+      <span class="fn">delay</span>(<span class="num">5000</span>);
+      <span class="kw">break</span>;
+  }
+}
+
+<span class="cm">// ═══════════════════════════════════════════════════════════════
+// DRIVE FUNCTIONS — DIFFERENTIAL STEERING (2× GF555 + 2× BTS7960)
+// Left track = BTS7960 #1 (L_RPWM/L_LPWM/L_REN/L_LEN)
+// Right track = BTS7960 #2 (R_RPWM/R_LPWM/R_REN/R_LEN)
+// ═══════════════════════════════════════════════════════════════</span>
+
+<span class="cm">// ─── Low-level single-motor helpers ───────────────────────────</span>
+<span class="kw">void</span> <span class="fn">motorFwd</span>(<span class="kw">int</span> rpwm, <span class="kw">int</span> lpwm, <span class="kw">int</span> ren, <span class="kw">int</span> len, <span class="kw">int</span> spd) {
+  <span class="fn">digitalWrite</span>(ren, HIGH); <span class="fn">digitalWrite</span>(len, LOW);
+  <span class="fn">analogWrite</span>(rpwm, spd);  <span class="fn">analogWrite</span>(lpwm, <span class="num">0</span>);
+}
+<span class="kw">void</span> <span class="fn">motorRev</span>(<span class="kw">int</span> rpwm, <span class="kw">int</span> lpwm, <span class="kw">int</span> ren, <span class="kw">int</span> len, <span class="kw">int</span> spd) {
+  <span class="fn">digitalWrite</span>(ren, LOW);  <span class="fn">digitalWrite</span>(len, HIGH);
+  <span class="fn">analogWrite</span>(rpwm, <span class="num">0</span>);    <span class="fn">analogWrite</span>(lpwm, spd);
+}
+<span class="kw">void</span> <span class="fn">motorStop</span>(<span class="kw">int</span> rpwm, <span class="kw">int</span> lpwm, <span class="kw">int</span> ren, <span class="kw">int</span> len) {
+  <span class="fn">analogWrite</span>(rpwm, <span class="num">0</span>);    <span class="fn">analogWrite</span>(lpwm, <span class="num">0</span>);
+  <span class="fn">digitalWrite</span>(ren, LOW);  <span class="fn">digitalWrite</span>(len, LOW);
+}
+
+<span class="cm">// ─── High-level drive commands ─────────────────────────────────</span>
+<span class="kw">void</span> <span class="fn">driveForward</span>(<span class="kw">int</span> spd) {
+  <span class="cm">// Both tracks forward at same speed → straight ahead</span>
+  <span class="fn">motorFwd</span>(L_RPWM, L_LPWM, L_REN, L_LEN, spd);
+  <span class="fn">motorFwd</span>(R_RPWM, R_LPWM, R_REN, R_LEN, spd);
+}
+
+<span class="kw">void</span> <span class="fn">driveReverse</span>(<span class="kw">int</span> spd) {
+  <span class="cm">// Both tracks reverse at same speed → straight back</span>
+  <span class="fn">motorRev</span>(L_RPWM, L_LPWM, L_REN, L_LEN, spd);
+  <span class="fn">motorRev</span>(R_RPWM, R_LPWM, R_REN, R_LEN, spd);
+}
+
+<span class="kw">void</span> <span class="fn">driveStop</span>() {
+  <span class="fn">motorStop</span>(L_RPWM, L_LPWM, L_REN, L_LEN);
+  <span class="fn">motorStop</span>(R_RPWM, R_LPWM, R_REN, R_LEN);
+}
+
+<span class="cm">// Spin in place — left FWD + right REV = rotate clockwise (turning left)</span>
+<span class="kw">void</span> <span class="fn">spinLeft</span>(<span class="kw">int</span> spd) {
+  <span class="fn">motorFwd</span>(L_RPWM, L_LPWM, L_REN, L_LEN, spd);
+  <span class="fn">motorRev</span>(R_RPWM, R_LPWM, R_REN, R_LEN, spd);
+}
+
+<span class="cm">// Spin in place — right FWD + left REV = rotate counter-clockwise (turning right)</span>
+<span class="kw">void</span> <span class="fn">spinRight</span>(<span class="kw">int</span> spd) {
+  <span class="fn">motorRev</span>(L_RPWM, L_LPWM, L_REN, L_LEN, spd);
+  <span class="fn">motorFwd</span>(R_RPWM, R_LPWM, R_REN, R_LEN, spd);
+}
+
+<span class="kw">void</span> <span class="fn">driveSweep</span>() {
+  <span class="cm">// Check for obstacle first</span>
+  <span class="kw">float</span> distL = <span class="fn">measureDistance</span>(PIN_US_L_TRIG, PIN_US_L_ECHO);
+  <span class="kw">float</span> distR = <span class="fn">measureDistance</span>(PIN_US_R_TRIG, PIN_US_R_ECHO);
+  <span class="kw">if</span> (distL &lt; OBSTACLE_CM || distR &lt; OBSTACLE_CM) {
+    currentState = STATE_OBSTACLE;
+    <span class="kw">return</span>;
+  }
+
+  <span class="cm">// Check leading-edge sensors based on current sweep direction</span>
+  <span class="kw">if</span> (sweepDirection) {
+    <span class="kw">bool</span> edgeFL = <span class="fn">digitalRead</span>(PIN_IR_FL);
+    <span class="kw">bool</span> edgeFR = <span class="fn">digitalRead</span>(PIN_IR_FR);
+    <span class="kw">if</span> (edgeFL || edgeFR) {
+      <span class="fn">driveStop</span>();
+      rowCount++;
+      currentState = (rowCount &gt;= MAX_ROWS) ? STATE_DONE : STATE_TURN;
+    } <span class="kw">else</span> {
+      <span class="fn">driveForward</span>(DRIVE_SPEED_FWD);
+    }
+  } <span class="kw">else</span> {
+    <span class="kw">bool</span> edgeRL = <span class="fn">digitalRead</span>(PIN_IR_RL);
+    <span class="kw">bool</span> edgeRR = <span class="fn">digitalRead</span>(PIN_IR_RR);
+    <span class="kw">if</span> (edgeRL || edgeRR) {
+      <span class="fn">driveStop</span>();
+      rowCount++;
+      currentState = (rowCount &gt;= MAX_ROWS) ? STATE_DONE : STATE_TURN;
+    } <span class="kw">else</span> {
+      <span class="fn">driveReverse</span>(DRIVE_SPEED_FWD);
+    }
+  }
+}
+
+<span class="kw">void</span> <span class="fn">doTurn</span>() {
+  <span class="cm">// Differential turn sequence for tracked robot:
+  // Step 1: spin 90° in place (half-turn toward new row)
+  // Step 2: drive forward one row width (shift)
+  // Step 3: spin 90° back to align with sweep direction
+  // This gives a clean U-turn without sliding tracks sideways</span>
+
+  <span class="fn">driveStop</span>();  <span class="fn">delay</span>(<span class="num">200</span>);
+
+  <span class="kw">long</span> spinMs = SPIN_TIME_MS / <span class="num">2</span>;   <span class="cm">// 90° = half of 180° time</span>
+  <span class="fn">spinLeft</span>(DRIVE_SPEED_TURN);        <span class="cm">// rotate 90° toward new row</span>
+  <span class="fn">delay</span>(spinMs);
+  <span class="fn">driveStop</span>();  <span class="fn">delay</span>(<span class="num">150</span>);
+
+  <span class="fn">driveForward</span>(DRIVE_SPEED_TURN);    <span class="cm">// advance one row width</span>
+  <span class="fn">delay</span>(SHIFT_TIME_MS);
+  <span class="fn">driveStop</span>();  <span class="fn">delay</span>(<span class="num">150</span>);
+
+  <span class="fn">spinLeft</span>(DRIVE_SPEED_TURN);        <span class="cm">// rotate another 90° to face new direction</span>
+  <span class="fn">delay</span>(spinMs);
+  <span class="fn">driveStop</span>();  <span class="fn">delay</span>(<span class="num">200</span>);
+
+  sweepDirection = !sweepDirection;  <span class="cm">// flip sweep direction</span>
+  currentState = STATE_SWEEP;
+}
+
+<span class="kw">void</span> <span class="fn">driveToDock</span>() {
+  <span class="kw">if</span> (<span class="fn">digitalRead</span>(PIN_DOCK) == LOW) {  <span class="cm">// dock IR sensor active low</span>
+    <span class="fn">driveStop</span>();
+    currentState = STATE_DOCK;
+    <span class="fn">wifiSend</span>(<span class="str">"STATUS:DOCKED"</span>);
+  } <span class="kw">else</span> {
+    <span class="fn">driveReverse</span>(DRIVE_SPEED_DOCK);
+  }
+}
+
+<span class="cm">// ═══════════════════════════════════════════════════════════════
+// BRUSH + WATER
+// ═══════════════════════════════════════════════════════════════</span>
+<span class="kw">void</span> <span class="fn">brushOn</span>() {
+  <span class="fn">digitalWrite</span>(PIN_BRUSH1_IN1, HIGH);
+  <span class="fn">digitalWrite</span>(PIN_BRUSH1_IN2, LOW);
+  <span class="fn">digitalWrite</span>(PIN_BRUSH2_IN3, HIGH);
+  <span class="fn">digitalWrite</span>(PIN_BRUSH2_IN4, LOW);
+  <span class="fn">analogWrite</span>(PIN_BRUSH1_EN, BRUSH_SPEED);
+  <span class="fn">analogWrite</span>(PIN_BRUSH2_EN, BRUSH_SPEED);
+}
+
+<span class="kw">void</span> <span class="fn">brushOff</span>() {
+  <span class="fn">analogWrite</span>(PIN_BRUSH1_EN, <span class="num">0</span>);
+  <span class="fn">analogWrite</span>(PIN_BRUSH2_EN, <span class="num">0</span>);
+  <span class="fn">digitalWrite</span>(PIN_BRUSH1_IN1, LOW);
+  <span class="fn">digitalWrite</span>(PIN_BRUSH1_IN2, LOW);
+  <span class="fn">digitalWrite</span>(PIN_BRUSH2_IN3, LOW);
+  <span class="fn">digitalWrite</span>(PIN_BRUSH2_IN4, LOW);
+}
+
+<span class="kw">void</span> <span class="fn">waterOn</span>() {
+  <span class="fn">digitalWrite</span>(PIN_SOLENOID, HIGH);  <span class="cm">// open valve</span>
+  <span class="fn">delay</span>(<span class="num">200</span>);
+  <span class="fn">digitalWrite</span>(PIN_PUMP, HIGH);      <span class="cm">// start pump</span>
+}
+
+<span class="kw">void</span> <span class="fn">waterOff</span>() {
+  <span class="fn">digitalWrite</span>(PIN_PUMP, LOW);
+  <span class="fn">delay</span>(<span class="num">300</span>);
+  <span class="fn">digitalWrite</span>(PIN_SOLENOID, LOW);   <span class="cm">// close valve after pump stops</span>
+}
+
+<span class="cm">// ═══════════════════════════════════════════════════════════════
+// SENSORS
+// ═══════════════════════════════════════════════════════════════</span>
+<span class="kw">float</span> <span class="fn">measureDistance</span>(<span class="kw">int</span> trigPin, <span class="kw">int</span> echoPin) {
+  <span class="fn">digitalWrite</span>(trigPin, LOW);
+  <span class="fn">delayMicroseconds</span>(<span class="num">2</span>);
+  <span class="fn">digitalWrite</span>(trigPin, HIGH);
+  <span class="fn">delayMicroseconds</span>(<span class="num">10</span>);
+  <span class="fn">digitalWrite</span>(trigPin, LOW);
+  <span class="kw">long</span> dur = <span class="fn">pulseIn</span>(echoPin, HIGH, <span class="num">30000</span>);  <span class="cm">// 30ms timeout</span>
+  <span class="kw">return</span> dur * <span class="num">0.0343</span> / <span class="num">2.0</span>;  <span class="cm">// cm</span>
+}
+
+<span class="kw">float</span> <span class="fn">readTilt</span>() {
+  <span class="kw">int16_t</span> ax, ay, az, gx, gy, gz;
+  mpu.<span class="fn">getMotion6</span>(&amp;ax, &amp;ay, &amp;az, &amp;gx, &amp;gy, &amp;gz);
+  <span class="kw">float</span> tiltX = <span class="fn">atan2</span>(ay, az) * <span class="num">180.0</span> / PI;
+  <span class="kw">return</span> <span class="fn">abs</span>(tiltX);
+}
+
+<span class="kw">int</span> <span class="fn">readBatteryMV</span>() {
+  <span class="kw">int</span> raw = <span class="fn">analogRead</span>(PIN_VBAT);
+  <span class="cm">// Voltage divider: R1=100k, R2=10k → scale factor = 11</span>
+  <span class="kw">return</span> (raw * <span class="num">5000L</span> / <span class="num">1023</span>) * <span class="num">11</span>;
+}
+
+<span class="kw">bool</span> <span class="fn">checkEStop</span>() {
+  <span class="kw">if</span> (<span class="fn">readTilt</span>() &gt; TILT_LIMIT_DEG) {
+    Serial.<span class="fn">println</span>(<span class="str">"ESTOP: tilt exceeded"</span>);
+    <span class="kw">return</span> <span class="kw">true</span>;
+  }
+  <span class="kw">if</span> (<span class="fn">readBatteryMV</span>() &lt; LOW_BATTERY_MV) {
+    Serial.<span class="fn">println</span>(<span class="str">"ESTOP: low battery"</span>);
+    <span class="fn">wifiSend</span>(<span class="str">"STATUS:LOW_BATTERY"</span>);
+    <span class="kw">return</span> <span class="kw">true</span>;
+  }
+  <span class="kw">if</span> (<span class="fn">analogRead</span>(PIN_WATER_LVL) &lt; LOW_WATER_VAL) {
+    Serial.<span class="fn">println</span>(<span class="str">"ESTOP: no water"</span>);
+    <span class="fn">wifiSend</span>(<span class="str">"STATUS:NO_WATER"</span>);
+    <span class="fn">waterOff</span>();
+    <span class="cm">// Don't full E-STOP for no water — just stop pump, continue dry</span>
+    <span class="kw">return</span> <span class="kw">false</span>;
+  }
+  <span class="kw">return</span> <span class="kw">false</span>;
+}
+
+<span class="kw">void</span> <span class="fn">handleObstacle</span>() {
+  <span class="fn">driveStop</span>();
+  <span class="fn">wifiSend</span>(<span class="str">"STATUS:OBSTACLE"</span>);
+  <span class="fn">delay</span>(<span class="num">1000</span>);
+
+  <span class="kw">float</span> distL = <span class="fn">measureDistance</span>(PIN_US_L_TRIG, PIN_US_L_ECHO);
+  <span class="kw">float</span> distR = <span class="fn">measureDistance</span>(PIN_US_R_TRIG, PIN_US_R_ECHO);
+
+  <span class="kw">if</span> (distL &gt;= OBSTACLE_CM &amp;&amp; distR &gt;= OBSTACLE_CM) {
+    currentState = STATE_SWEEP;  <span class="cm">// obstacle gone, resume</span>
+    <span class="fn">wifiSend</span>(<span class="str">"STATUS:SWEEPING"</span>);
+  }
+  <span class="cm">// else stay in OBSTACLE state and retry next loop</span>
+}
+
+<span class="cm">// ═══════════════════════════════════════════════════════════════
+// WIFI (ESP8266 via Serial2)
+// ═══════════════════════════════════════════════════════════════</span>
+<span class="kw">void</span> <span class="fn">wifiSend</span>(<span class="kw">const char</span>* msg) {
+  Serial2.<span class="fn">println</span>(msg);
+  Serial.<span class="fn">println</span>(msg);
+}
+</pre>
+
+    <h3 id="p4c">ESP8266 WiFi Firmware — esp_wifi.ino</h3>
+    <div class="info">ℹ Upload this separately to the ESP8266 NodeMCU using Arduino IDE. Change SSID and password to your WiFi network.</div>
+<pre>
+<span class="pp">#include</span> <span class="str">&lt;ESP8266WiFi.h&gt;</span>
+<span class="pp">#include</span> <span class="str">&lt;ESP8266WebServer.h&gt;</span>
+
+<span class="kw">const char</span>* ssid     = <span class="str">"YOUR_WIFI_SSID"</span>;
+<span class="kw">const char</span>* password = <span class="str">"YOUR_WIFI_PASS"</span>;
+
+<span class="fn">ESP8266WebServer</span> server(<span class="num">80</span>);
+<span class="fn">String</span> botStatus = <span class="str">"IDLE"</span>;
+
+<span class="kw">void</span> <span class="fn">setup</span>() {
+  Serial.<span class="fn">begin</span>(<span class="num">115200</span>);  <span class="cm">// from Arduino Mega TX2</span>
+  WiFi.<span class="fn">begin</span>(ssid, password);
+  <span class="kw">while</span> (WiFi.<span class="fn">status</span>() != WL_CONNECTED) <span class="fn">delay</span>(<span class="num">500</span>);
+
+  server.<span class="fn">on</span>(<span class="str">"/"</span>, []() {
+    <span class="fn">String</span> html = <span class="str">"&lt;h1&gt;SolarBot Status&lt;/h1&gt;&lt;p&gt;"</span> + botStatus + <span class="str">"&lt;/p&gt;"</span>;
+    html += <span class="str">"&lt;meta http-equiv='refresh' content='5'&gt;"</span>;
+    server.<span class="fn">send</span>(<span class="num">200</span>, <span class="str">"text/html"</span>, html);
+  });
+  server.<span class="fn">begin</span>();
+}
+
+<span class="kw">void</span> <span class="fn">loop</span>() {
+  <span class="kw">if</span> (Serial.<span class="fn">available</span>()) {
+    botStatus = Serial.<span class="fn">readStringUntil</span>(<span class="str">'\n'</span>);
+    botStatus.<span class="fn">trim</span>();
+  }
+  server.<span class="fn">handleClient</span>();
+}
+</pre>
+    <div class="tip">✓ After uploading to ESP8266, open Serial Monitor on its COM port at 115200 baud. It will print the IP address (e.g. 192.168.1.42). Open that address in any browser on the same WiFi to see live robot status.</div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PHASE 5 — CALIBRATION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="phase" id="p5">
+  <div class="phase-header">
+    <div class="phase-num">5</div>
+    <div>
+      <div class="phase-title">CALIBRATION</div>
+      <div class="phase-sub">Must do before first autonomous run</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <div class="step">
+      <div class="step-num">CALIBRATION 1</div>
+      <div class="step-title">IR Edge Sensor Threshold</div>
+      <ul>
+        <li>Place robot ON the solar panel surface</li>
+        <li>Open Serial Monitor → read IR sensor DO pin value (should be LOW = 0)</li>
+        <li>Slowly slide robot to the edge — watch when DO flips HIGH</li>
+        <li>Adjust the small potentiometer on TCRT5000 module until it triggers 1–2cm before the wheel reaches the edge</li>
+        <li>Do this for all 4 sensors</li>
+        <li>Write down the physical gap at which each triggers — should be consistent</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">CALIBRATION 2</div>
+      <div class="step-title">SPIN_TIME_MS and SHIFT_TIME_MS (Differential Turn)</div>
+      <ul>
+        <li>The robot turns using differential drive: left motor FWD + right motor REV = spin in place</li>
+        <li>Place robot on a flat surface with a tape cross marking the centre point</li>
+        <li>Run a test sketch that calls <code>spinLeft(DRIVE_SPEED_TURN); delay(SPIN_TIME_MS); driveStop();</code></li>
+        <li>Measure the rotation angle — adjust SPIN_TIME_MS until robot rotates exactly 90°</li>
+        <li>Typical SPIN_TIME_MS for 90°: 900–1200ms (on solar panel glass, less friction than floor)</li>
+        <li>Then test doTurn() — robot should spin 90°, drive forward one row, spin 90° again</li>
+        <li>Measure lateral shift — adjust SHIFT_TIME_MS until shift = exactly one brush roller width (~143mm)</li>
+        <li>Typical SHIFT_TIME_MS: 600–900ms</li>
+      </ul>
+      <div class="warn">⚠ Calibrate on the actual solar panel glass surface — friction is significantly less than a floor and will affect both SPIN_TIME_MS and SHIFT_TIME_MS.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">CALIBRATION 3</div>
+      <div class="step-title">MAX_ROWS Count</div>
+      <ul>
+        <li>Measure panel width (e.g. 1650mm) and brush roller width (e.g. 150mm)</li>
+        <li>MAX_ROWS = ceil(panel_width / brush_width) = ceil(1650/150) = 11</li>
+        <li>Set MAX_ROWS in firmware accordingly</li>
+        <li>Add 1 extra row as buffer to ensure full coverage</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">CALIBRATION 4</div>
+      <div class="step-title">RTC Time Set</div>
+      <ul>
+        <li>Upload a one-time sketch to set the RTC time to current time:</li>
+      </ul>
+<pre>
+<span class="pp">#include</span> <span class="str">&lt;Wire.h&gt;</span>
+<span class="pp">#include</span> <span class="str">&lt;RTClib.h&gt;</span>
+<span class="fn">RTC_DS3231</span> rtc;
+<span class="kw">void</span> <span class="fn">setup</span>() {
+  Wire.<span class="fn">begin</span>();
+  rtc.<span class="fn">begin</span>();
+  <span class="cm">// Set to compile time automatically:</span>
+  rtc.<span class="fn">adjust</span>(<span class="fn">DateTime</span>(F(__DATE__), F(__TIME__)));
+}
+<span class="kw">void</span> <span class="fn">loop</span>() {}
+</pre>
+      <ul>
+        <li>Upload this, wait 2 seconds, then upload the main autonomous firmware</li>
+        <li>RTC will now keep accurate time even when robot is powered off</li>
+        <li>Change the alarm time in setup() if you want cleaning at a different hour</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">CALIBRATION 5</div>
+      <div class="step-title">Battery Voltage Calibration</div>
+      <ul>
+        <li>Measure actual battery voltage with multimeter → e.g. 23.8V</li>
+        <li>Read raw ADC value from Serial Monitor → e.g. 434</li>
+        <li>Calculate: scale = 23800 / (434 * 5000/1023) = actual_mv / adc_mv</li>
+        <li>Adjust the *11 multiplier in readBatteryMV() to match your divider resistors</li>
+        <li>Set LOW_BATTERY_MV to ~80% of full charge voltage</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PHASE 6 — TESTING -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="phase" id="p6">
+  <div class="phase-header">
+    <div class="phase-num">6</div>
+    <div>
+      <div class="phase-title">FULL TEST PROCEDURE</div>
+      <div class="phase-sub">Do every test in order — do not skip</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <h3>Pre-Power Checklist</h3>
+    <ul class="chk">
+      <li>All flyback diodes installed and correct polarity</li>
+      <li>No bare wire touching chassis metal</li>
+      <li>All IR sensors mounted and pointing down</li>
+      <li>Ultrasonic sensors mounted pointing forward</li>
+      <li>MPU-6050 AD0 pin connected to 3.3V (address 0x69)</li>
+      <li>DS3231 coin cell installed</li>
+      <li>ESP8266 powered from 3.3V rail only</li>
+      <li>All I2C pull-up resistors (4.7kΩ) on SDA and SCL</li>
+      <li>Voltage dividers on ultrasonic ECHO pins</li>
+      <li>Water tank filled, all hose connections tight</li>
+      <li>Track tension correct</li>
+    </ul>
+
+    <h3>Test Sequence</h3>
+    <table>
+      <tr><th>#</th><th>Test</th><th>Expected Result</th><th>If Fail</th></tr>
+      <tr><td class="tc1">T1</td><td>Power on — check rails</td><td>24V, 12V, 5V correct on multimeter</td><td>Check buck converter adjustment pots</td></tr>
+      <tr><td class="tc1">T2</td><td>Serial Monitor open</td><td>Prints "SolarBot READY — waiting for RTC alarm"</td><td>Check USB connection, baud rate 115200</td></tr>
+      <tr><td class="tc1">T3</td><td>I2C scan sketch</td><td>Finds 0x68 (DS3231), 0x69 (MPU-6050)</td><td>Check SDA/SCL wiring, pull-up resistors</td></tr>
+      <tr><td class="tc1">T4</td><td>IR sensor test</td><td>Serial prints LOW over panel, HIGH over air</td><td>Adjust pot on sensor module</td></tr>
+      <tr><td class="tc1">T5</td><td>Ultrasonic test</td><td>Serial prints distance in cm accurately</td><td>Check echo voltage divider</td></tr>
+      <tr><td class="tc1">T6</td><td>LEFT motor forward (BTS7960 #1)</td><td>Left GF555 spins, left track moves forward</td><td>Check L_RPWM=D9, L_REN=D2 wired to BTS7960 #1</td></tr>
+      <tr><td class="tc1">T7</td><td>RIGHT motor forward (BTS7960 #2)</td><td>Right GF555 spins, right track moves forward</td><td>Check R_RPWM=D11, R_REN=D4 wired to BTS7960 #2</td></tr>
+      <tr><td class="tc1">T7b</td><td>Differential spin test</td><td>spinLeft() → robot spins clockwise on the spot</td><td>If robot moves straight, one BTS7960 wired wrong direction</td></tr>
+      <tr><td class="tc1">T8</td><td>Brush motors ON</td><td>Both 6331K61 rollers spin</td><td>Check L298N IN1-IN4 at D22–D25, ENA=D6 ENB=D7 PWM</td></tr>
+      <tr><td class="tc1">T9</td><td>Water system</td><td>Pump runs, water flows from nozzles</td><td>Check MOSFET gate signal, solenoid opens</td></tr>
+      <tr><td class="tc1">T10</td><td>RTC alarm test</td><td>Set alarm 2 min from now — robot starts</td><td>Re-set RTC time, check SQW/INT wiring</td></tr>
+      <tr><td class="tc1">T11</td><td>Full sweep dry run</td><td>Robot sweeps S-pattern on flat surface with clean differential turns</td><td>Adjust SPIN_TIME_MS / SHIFT_TIME_MS</td></tr>
+      <tr><td class="tc1">T12</td><td>Full sweep on panel</td><td>Robot covers full panel, stops at dock</td><td>Adjust MAX_ROWS, check dock sensor</td></tr>
+      <tr><td class="tc1">T13</td><td>WiFi status page</td><td>Browser shows live status updates</td><td>Check ESP8266 wiring, SSID/password</td></tr>
+      <tr><td class="tc1">T14</td><td>Tilt E-STOP test</td><td>Tilt robot 25° → all motors stop immediately</td><td>Check MPU6050 I2C, readTilt() function</td></tr>
+      <tr><td class="tc1">T15</td><td>Scheduled 24h test</td><td>Robot auto-starts at 6:00 AM next day</td><td>Verify RTC time with time sketch</td></tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PHASE 7 — TROUBLESHOOTING -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="phase" id="p7">
+  <div class="phase-header">
+    <div class="phase-num">7</div>
+    <div>
+      <div class="phase-title">TROUBLESHOOTING</div>
+      <div class="phase-sub">Most common problems and fixes</div>
+    </div>
+  </div>
+  <div class="phase-body">
+
+    <table>
+      <tr><th>Problem</th><th>Likely Cause</th><th>Fix</th></tr>
+      <tr><td class="tc4">Robot doesn't start at alarm time</td><td>RTC time wrong or SQW pin not connected</td><td>Re-run RTC set sketch. Check D2 wire to SQW.</td></tr>
+      <tr><td class="tc4">Robot spins but doesn't shift rows</td><td>SHIFT_TIME_MS too short or surface too slippery</td><td>Increase SHIFT_TIME_MS by 100ms increments. Check driveForward() runs both motors.</td></tr>
+      <tr><td class="tc4">Robot curves instead of going straight</td><td>One GF555 faster than the other (motor tolerance)</td><td>Reduce faster motor PWM by 5–10 counts. Add PID speed control using encoder feedback.</td></tr>
+      <tr><td class="tc4">Only one track moves</td><td>One BTS7960 not enabled or wired to wrong pins</td><td>Test each BTS7960 separately. Check R_EN/L_EN pins are HIGH during driveForward.</td></tr>
+      <tr><td class="tc4">Robot falls off panel edge</td><td>IR sensors triggering too late</td><td>Adjust sensor pot so it triggers earlier. Angle sensors slightly outward.</td></tr>
+      <tr><td class="tc4">Robot stops mid-sweep randomly</td><td>Obstacle sensor false trigger (sunlight interference)</td><td>Add cardboard shade above ultrasonic sensors. Increase OBSTACLE_CM threshold slightly.</td></tr>
+      <tr><td class="tc4">Track derails during turn</td><td>Turn speed too high or track tension loose</td><td>Reduce DRIVE_SPEED_TURN. Re-tension ST-320 track.</td></tr>
+      <tr><td class="tc4">No water from nozzles</td><td>Pump not primed or solenoid stuck closed</td><td>Fill tank, run pump manually for 5s to prime. Check solenoid MOSFET gate signal.</td></tr>
+      <tr><td class="tc4">WiFi page not loading</td><td>ESP8266 not connected to WiFi</td><td>Check SSID/password in ESP firmware. Ensure ESP powered from 3.3V only.</td></tr>
+      <tr><td class="tc4">I2C devices not found</td><td>Missing pull-up resistors or address conflict</td><td>Add 4.7kΩ pull-ups on SDA/SCL. Confirm MPU-6050 AD0 is HIGH (0x69).</td></tr>
+      <tr><td class="tc4">E-STOP triggers at startup</td><td>IMU not calibrated or mounted tilted</td><td>Mount IMU perfectly flat. Increase TILT_LIMIT_DEG temporarily to 30° for testing.</td></tr>
+      <tr><td class="tc4">Brush motors don't spin</td><td>L298N EN pins not getting PWM</td><td>Check D5/D6 PWM output with multimeter. Verify L298N VS is at 12V.</td></tr>
+      <tr><td class="tc4">Battery voltage reads wrong</td><td>Voltage divider ratio incorrect</td><td>Measure Vbat with multimeter. Recalculate divider ratio and update firmware multiplier.</td></tr>
+      <tr><td class="tc4">Robot misses rows (gap between passes)</td><td>SHIFT_TIME_MS too short</td><td>Increase by 100ms increments until rows overlap slightly.</td></tr>
+    </table>
+
+    <div class="tip" style="margin-top:14px;">
+      ✓ <strong>Always test on the ground first</strong> before putting on a real solar panel.<br>
+      ✓ Use masking tape to mark row boundaries on the ground during calibration.<br>
+      ✓ Keep Serial Monitor open during first 3–4 runs to catch any state machine issues.
+    </div>
+
+  </div>
+</div>
+
+<div style="text-align:center;padding:14px;color:#30363d;font-size:10px;border-top:1px solid #21262d;margin-top:10px;">
+  SolarCleanerBot · Full Autonomous Guide v2 · Assem1.SLDASM · 2× GF555 Differential Drive · 2× BTS7960 · Generated by Claude Code · 2026-05-15
+</div>
+</body>
+</html>
